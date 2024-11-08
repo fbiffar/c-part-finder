@@ -75,7 +75,7 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Please identify any machine components in this image and their position in pixel coordinates. No rigorous explanation. List the components and their corresponding positions seperated by a plus sign and the component location pair seperated by commas."},
+                    {"type": "text", "text": "Please identify any machine components in this image. No rigorous explanation. List the components seperated by commas"},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -100,7 +100,7 @@ def print_response_and_store (response):
 
 
 def search_bossard(component_name):
-    query = f"Bossard {component_name} site: www.bossard.com"
+    query = f"Bossard {component_name} site: www.bossard.ch"
     try:
         # Use next() to get the first result from the generator
         result = next(search(query, num_results=1, lang='de'), None)
@@ -127,17 +127,17 @@ display_image(image, "Original Image")
 rows, cols = 2,2
 tiles, tile_h, tile_w = divide_image_into_tiles(image, rows, cols)
 
-# Overlay the grid on the image and display
-image_with_grid = overlay_grid(image, rows, cols)
-display_image(image_with_grid, "Image with Grid Overlay")
+# # Overlay the grid on the image and display
+# image_with_grid = overlay_grid(image, rows, cols)
+# display_image(image_with_grid, "Image with Grid Overlay")
 
-# Display each tile individually
-for idx, tile in enumerate(tiles):
-    display_image(tile, f"Tile {idx + 1}")
+# # Display each tile individually
+# for idx, tile in enumerate(tiles):
+#     display_image(tile, f"Tile {idx + 1}")
 
-# Arrange and display all tiles in a single grid layout
-tiles_grid = arrange_tiles_in_grid(tiles, rows, cols)
-display_image(tiles_grid, "All Tiles Arranged in Grid")
+# # Arrange and display all tiles in a single grid layout
+# tiles_grid = arrange_tiles_in_grid(tiles, rows, cols)
+# display_image(tiles_grid, "All Tiles Arranged in Grid")
 
 # Encode each tile to base64 and send to OpenAI API
 load_dotenv()
@@ -151,7 +151,7 @@ for idx, tile in enumerate(tiles):
         encoded_tile = encode_to_base64(tile)
         response = send_to_openai_api(encoded_tile, api_endpoint, api_key)
         all_tile_elements.extend(print_response_and_store(response))
-        break
+        #break
 # Print the combined list of all elements
 print("All Elements from Tiles:", all_tile_elements)
 

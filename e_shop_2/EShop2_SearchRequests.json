@@ -1,0 +1,199 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "EXL24",
+    "collectionId": "941f960f-fbbe-4070-b3df-4f1cc00b8dd2",
+    "dateExported": "2024-11-07T20:15:46.056Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "b7dd6d1a-024f-4510-9eb1-c5f340c3b231",
+            "colId": "941f960f-fbbe-4070-b3df-4f1cc00b8dd2",
+            "containerId": "",
+            "name": "https://cse.google.com/cse/element/v1?rsz=filtered_cse&num=10&hl=en&source=gcsc&cselibv=8fa85d58e016b414&cx=b2a24132e14554771&q=test&safe=off&cse_tok=AB-tC_6BT-yrg7zcjYCVrThAbBoG%3A1731009169734&sort=&exp=cc%2Capo&oq=test&gs_l=partner-web.12..0i512i433j0i512i433i131j0i512j0i512i433i131j0i512l6.147282.147642.5.165949.4.4.0.0.0.0.133.389.3j1.4.0.csems%2Cnrl%3D10...0....1.34.partner-web..0.41.2815.7h8K4NaDUGo&cseclient=hosted-page-client&callback=google.search.cse.api1947&rurl=https%3A%2F%2Fcse.google.com%2Fcse%3Fcx%3Db2a24132e14554771",
+            "url": "https://cse.google.com/cse/element/v1?rsz=filtered_cse&num=10&hl=en&source=gcsc&cselibv=8fa85d58e016b414&cx=b2a24132e14554771&q=test&safe=off&cse_tok=AB-tC_6BT-yrg7zcjYCVrThAbBoG%3A1731009169734&sort=&exp=cc%2Capo&oq=test&gs_l=partner-web.12..0i512i433j0i512i433i131j0i512j0i512i433i131j0i512l6.147282.147642.5.165949.4.4.0.0.0.0.133.389.3j1.4.0.csems%2Cnrl%3D10...0....1.34.partner-web..0.41.2815.7h8K4NaDUGo&cseclient=hosted-page-client&callback=google.search.cse.api1947&rurl=https%3A%2F%2Fcse.google.com%2Fcse%3Fcx%3Db2a24132e14554771",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2024-11-07T20:15:21.029Z",
+            "modified": "2024-11-07T20:15:21.029Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "rsz",
+                    "value": "filtered_cse",
+                    "isPath": false
+                },
+                {
+                    "name": "num",
+                    "value": "10",
+                    "isPath": false
+                },
+                {
+                    "name": "hl",
+                    "value": "en",
+                    "isPath": false
+                },
+                {
+                    "name": "source",
+                    "value": "gcsc",
+                    "isPath": false
+                },
+                {
+                    "name": "cselibv",
+                    "value": "8fa85d58e016b414",
+                    "isPath": false
+                },
+                {
+                    "name": "cx",
+                    "value": "b2a24132e14554771",
+                    "isPath": false
+                },
+                {
+                    "name": "q",
+                    "value": "test",
+                    "isPath": false
+                },
+                {
+                    "name": "safe",
+                    "value": "off",
+                    "isPath": false
+                },
+                {
+                    "name": "cse_tok",
+                    "value": "AB-tC_6BT-yrg7zcjYCVrThAbBoG%3A1731009169734",
+                    "isPath": false
+                },
+                {
+                    "name": "sort",
+                    "value": "",
+                    "isPath": false
+                },
+                {
+                    "name": "exp",
+                    "value": "cc%2Capo",
+                    "isPath": false
+                },
+                {
+                    "name": "oq",
+                    "value": "test",
+                    "isPath": false
+                },
+                {
+                    "name": "gs_l",
+                    "value": "partner-web.12..0i512i433j0i512i433i131j0i512j0i512i433i131j0i512l6.147282.147642.5.165949.4.4.0.0.0.0.133.389.3j1.4.0.csems%2Cnrl%3D10...0....1.34.partner-web..0.41.2815.7h8K4NaDUGo",
+                    "isPath": false
+                },
+                {
+                    "name": "cseclient",
+                    "value": "hosted-page-client",
+                    "isPath": false
+                },
+                {
+                    "name": "callback",
+                    "value": "google.search.cse.api1947",
+                    "isPath": false
+                },
+                {
+                    "name": "rurl",
+                    "value": "https%3A%2F%2Fcse.google.com%2Fcse%3Fcx%3Db2a24132e14554771",
+                    "isPath": false
+                }
+            ]
+        },
+        {
+            "_id": "836f0e2a-836d-41d4-b18e-cbdb77bee5ee",
+            "colId": "941f960f-fbbe-4070-b3df-4f1cc00b8dd2",
+            "containerId": "",
+            "name": "https://cse.google.com/cse/element/v1?rsz=filtered_cse&num=10&hl=en&source=gcsc&cselibv=8fa85d58e016b414&cx=b2a24132e14554771&q=door+handle&safe=off&cse_tok=AB-tC_6BT-yrg7zcjYCVrThAbBoG%3A1731009169734&sort=&exp=cc%2Capo&oq=door+handle&gs_l=partner-web.12...0.0.4.93208.0.0.0.0.0.0.0.0..0.0.csems%2Cnrl%3D10...0.....34.partner-web..0.37.2426.eNuI2SPd7VI&cseclient=hosted-page-client&callback=google.search.cse.api4542&rurl=https%3A%2F%2Fcse.google.com%2Fcse%3Fcx%3Db2a24132e14554771",
+            "url": "https://cse.google.com/cse/element/v1?rsz=filtered_cse&num=10&hl=en&source=gcsc&cselibv=8fa85d58e016b414&cx=b2a24132e14554771&q=leveling+feet&safe=off&cse_tok=AB-tC_6BT-yrg7zcjYCVrThAbBoG%3A1731009169734&sort&exp=cc%2Capo&oq=leveling+feet&gs_l=partner-web.12...0.0.4.93208.0.0.0.0.0.0.0.0..0.0.csems%2Cnrl%3D10...0.....34.partner-web..0.37.2426.eNuI2SPd7VI&cseclient=hosted-page-client&callback=google.search.cse.api4542&rurl=https%3A%2F%2Fcse.google.com%2Fcse%3Fcx%3Db2a24132e14554771",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2024-11-07T20:15:33.415Z",
+            "modified": "2024-11-07T20:15:33.415Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "rsz",
+                    "value": "filtered_cse",
+                    "isPath": false
+                },
+                {
+                    "name": "num",
+                    "value": "10",
+                    "isPath": false
+                },
+                {
+                    "name": "hl",
+                    "value": "en",
+                    "isPath": false
+                },
+                {
+                    "name": "source",
+                    "value": "gcsc",
+                    "isPath": false
+                },
+                {
+                    "name": "cselibv",
+                    "value": "8fa85d58e016b414",
+                    "isPath": false
+                },
+                {
+                    "name": "cx",
+                    "value": "b2a24132e14554771",
+                    "isPath": false
+                },
+                {
+                    "name": "q",
+                    "value": "leveling+feet",
+                    "isPath": false
+                },
+                {
+                    "name": "safe",
+                    "value": "off",
+                    "isPath": false
+                },
+                {
+                    "name": "cse_tok",
+                    "value": "AB-tC_6BT-yrg7zcjYCVrThAbBoG%3A1731009169734",
+                    "isPath": false
+                },
+                {
+                    "name": "sort",
+                    "value": "",
+                    "isPath": false
+                },
+                {
+                    "name": "exp",
+                    "value": "cc%2Capo",
+                    "isPath": false
+                },
+                {
+                    "name": "oq",
+                    "value": "leveling+feet",
+                    "isPath": false
+                },
+                {
+                    "name": "gs_l",
+                    "value": "partner-web.12...0.0.4.93208.0.0.0.0.0.0.0.0..0.0.csems%2Cnrl%3D10...0.....34.partner-web..0.37.2426.eNuI2SPd7VI",
+                    "isPath": false
+                },
+                {
+                    "name": "cseclient",
+                    "value": "hosted-page-client",
+                    "isPath": false
+                },
+                {
+                    "name": "callback",
+                    "value": "google.search.cse.api4542",
+                    "isPath": false
+                },
+                {
+                    "name": "rurl",
+                    "value": "https%3A%2F%2Fcse.google.com%2Fcse%3Fcx%3Db2a24132e14554771",
+                    "isPath": false
+                }
+            ]
+        }
+    ],
+    "ref": "rcmjn0Xmwv20x5wTUkVUR7AbRRSE5pJpD3GTp7VOi-dcJFkEaPae119Egp8NNgPic8_o-RtA9-eyV5totBShNQ"
+}

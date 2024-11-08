@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import base64
 import requests
 import json
-from dotenv import load_dotenv  # For loading environment variables from a .env file
+from dotenv import load_dotenv  
 import os
 import requests
 from PIL import Image

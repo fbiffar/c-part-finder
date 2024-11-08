@@ -116,7 +116,7 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "Please identify any machine components in this image. No rigorous explanation. List the components seperated by commas"},
+                    {"type": "text", "text": "Please identify any machine components in this image. No rigorous explanation. List the components seperated by commas, if there are no machine parts found please type 'No machine parts found'."},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -155,7 +155,7 @@ def search_bossard(component_name):
     
 # Function to store the component and its URL in the CSV file immediately
 def store_in_csv(file_path,part_id, component, url, tile_id):
-    if url != "https://www.bossard.com/ch-en/" and url != "Not available" and url != "https://www.bossard.com/": 
+    if component != 'No machine parts found' and url != "https://www.bossard.com/ch-en/" and url != "Not available" and url != "https://www.bossard.com/": 
         with open(file_path, mode="a", newline="", encoding="utf-8") as file:
             writer = csv.writer(file)
             writer.writerow([part_id, component, url, tile_id])

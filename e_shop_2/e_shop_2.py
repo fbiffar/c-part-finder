@@ -85,22 +85,36 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
                 ]
             }
         ],
+        # "messages": [
+        #     {
+        #         "role": "user",
+        #         "content": [
+        #             {"type": "text", "text": "Please identify any machine components in this image. No rigorous explanation. List the components seperated by commas"},
+        #             {
+        #                 "type": "image_url",
+        #                 "image_url": {
+        #                     "url": f"data:image/png;base64,{encoded_image}"
+        #                 }
+        #             }
+        #         ]
+        #     }
+        # ],
         "max_tokens": 300  
     }
     response = requests.post(api_endpoint, headers=headers, json=data)
     return response.json()
 
-def print_response_and_store (response):
+def print_response_and_store (response, idx):
     # Extract and print only the content
     content = response.get("choices", [{}])[0].get("message", {}).get("content", "No content available")
     print(f"Tile {idx + 1} Response: {content}")
-    return [element.strip() for element in content.split(",") if element.strip()]
+    return [[element.strip(), idx +1] for element in content.split(",") if element.strip()]
     
  
 
 
 def search_bossard(component_name):
-    query = f"Bossard {component_name} site: www.bossard.ch"
+    query = f"{component_name} site: www.bossard.com"
     try:
         # Use next() to get the first result from the generator
         result = next(search(query, num_results=1, lang='de'), None)
@@ -113,10 +127,10 @@ def search_bossard(component_name):
         return "Not available"
     
 # Function to store the component and its URL in the CSV file immediately
-def store_in_csv(file_path,part_id, component, url):
+def store_in_csv(file_path,part_id, component, url, tile_id):
     with open(file_path, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow([part_id, component, url])
+        writer.writerow([part_id, component, url, tile_id])
 
 # Load and display the original image
 image_path = "e_shop_2/conveyor_machine.png"
@@ -150,8 +164,8 @@ all_tile_elements = []
 for idx, tile in enumerate(tiles):
         encoded_tile = encode_to_base64(tile)
         response = send_to_openai_api(encoded_tile, api_endpoint, api_key)
-        all_tile_elements.extend(print_response_and_store(response))
-        #break
+        all_tile_elements.extend(print_response_and_store(response, idx))
+        break
 # Print the combined list of all elements
 print("All Elements from Tiles:", all_tile_elements)
 
@@ -160,13 +174,14 @@ availability = {}
 csv_file_path = "machine_parts_live.csv"
 with open(csv_file_path, mode="w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
-    writer.writerow(["Part ID","Machine Part", "URL"])
+    writer.writerow(["Part ID","Machine Part", "URL", "Tile ID"])
 
 for part_id, component in enumerate(all_tile_elements, start=1): 
-    url = search_bossard(component)
-    availability[component] = url
-    print(f"Part ID: {part_id}, Component: {component} - URL: {url}")
-    store_in_csv(csv_file_path, part_id, component, url) 
-    break 
+    component_name, tile_id = component
+    url = search_bossard(component_name)
+    availability[component_name] = url
+    print(f"Part ID: {part_id}, Component: {component_name} - URL: {url}")
+    store_in_csv(csv_file_path, part_id, component_name, url, tile_id) 
+    #break 
 
 # Print the availability of each component

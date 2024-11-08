@@ -184,4 +184,6 @@ for part_id, component in enumerate(all_tile_elements, start=1):
     store_in_csv(csv_file_path, part_id, component_name, url, tile_id) 
     #break 
 
-# Print the availability of each component
+
+
+

@@ -1,3 +1,16 @@
+
+
+
+
+#run code with : streamlit run e_shop_2.py
+
+
+
+
+
+
+
+
 # Import necessary libraries
 import cv2
 import numpy as np
@@ -8,11 +21,39 @@ import json
 from dotenv import load_dotenv  # For loading environment variables from a .env file
 import os
 import requests
+from PIL import Image
 from googlesearch import search
 import csv
+import streamlit as st 
+import pandas as pd
 
+def get_image_from_finder():
+    # Set up the app title
+    st.title("Image Upload and Segmentation Setup")
 
+    # File uploader for the image
+    uploaded_file = st.file_uploader("Upload an image of machine", type=["png", "jpg", "jpeg"])
 
+    # Row and column input fields
+    rows = st.number_input("Enter the number of rows for segmentation:", min_value=1, max_value=100, step=1, format="%d")
+    cols = st.number_input("Enter the number of columns for segmentation:", min_value=1, max_value=100, step=1, format="%d")
+
+    # Process the uploaded file
+    if uploaded_file:
+        # Open the uploaded image
+        image_pl = Image.open(uploaded_file)
+
+        # Convert the image to a NumPy array (RGB format)
+        image = np.array(image_pl)
+
+        # Display the uploaded image
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+        # Confirm and store the inputs
+        if st.button("Confirm"):
+            st.success(f"Image successfully uploaded and segmentation set to {rows} rows and {cols} columns.")
+
+        return image, rows, cols    
 # Function to display an image using Matplotlib
 def display_image(img, title="Image"):
     plt.figure(figsize=(8, 8))
@@ -119,28 +160,32 @@ def store_in_csv(file_path,part_id, component, url, tile_id):
             writer = csv.writer(file)
             writer.writerow([part_id, component, url, tile_id])
 
-# Load and display the original image
-image_path = "e_shop_2/packaging_machine.png"
-image = cv2.imread(image_path)
-display_image(image, "Original Image")
 
-# Divide the image into tiles
-rows, cols = 3,3
+def dialogue_return_csv(csv_file_path):
+    # Notify the user
+    st.success(f"CSV file generated: {csv_file_path}")
+    
+    df = pd.read_csv(csv_file_path)
+    st.subheader("Generated Table from CSV")
+    st.dataframe(df)
+
+
+
+
+
+#run code with : streamlit run e_shop_2.py
+
+
+
+
+
+
+
+
+image, rows, cols = get_image_from_finder()
+display_image(image, "Original Image")
 tiles, tile_h, tile_w = divide_image_into_tiles(image, rows, cols)
 
-# # Overlay the grid on the image and display
-# image_with_grid = overlay_grid(image, rows, cols)
-# display_image(image_with_grid, "Image with Grid Overlay")
-
-# # Display each tile individually
-# for idx, tile in enumerate(tiles):
-#     display_image(tile, f"Tile {idx + 1}")
-
-# # Arrange and display all tiles in a single grid layout
-# tiles_grid = arrange_tiles_in_grid(tiles, rows, cols)
-# display_image(tiles_grid, "All Tiles Arranged in Grid")
-
-# Encode each tile to base64 and send to OpenAI API
 load_dotenv()
 
 # Access environment variables
@@ -171,7 +216,7 @@ for part_id, component in enumerate(all_tile_elements, start=1):
     store_in_csv(csv_file_path, part_id, component_name, url, tile_id) 
     #break 
 
-
+dialogue_return_csv(csv_file_path)
 
 
 

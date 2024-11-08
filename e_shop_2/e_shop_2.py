@@ -85,20 +85,6 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
                 ]
             }
         ],
-        # "messages": [
-        #     {
-        #         "role": "user",
-        #         "content": [
-        #             {"type": "text", "text": "Please identify any machine components in this image. No rigorous explanation. List the components seperated by commas"},
-        #             {
-        #                 "type": "image_url",
-        #                 "image_url": {
-        #                     "url": f"data:image/png;base64,{encoded_image}"
-        #                 }
-        #             }
-        #         ]
-        #     }
-        # ],
         "max_tokens": 300  
     }
     response = requests.post(api_endpoint, headers=headers, json=data)
@@ -128,17 +114,18 @@ def search_bossard(component_name):
     
 # Function to store the component and its URL in the CSV file immediately
 def store_in_csv(file_path,part_id, component, url, tile_id):
-    with open(file_path, mode="a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow([part_id, component, url, tile_id])
+    if url != "https://www.bossard.com/ch-en/" and url != "Not available" and url != "https://www.bossard.com/": 
+        with open(file_path, mode="a", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow([part_id, component, url, tile_id])
 
 # Load and display the original image
-image_path = "e_shop_2/conveyor_machine.png"
+image_path = "e_shop_2/packaging_machine.png"
 image = cv2.imread(image_path)
 display_image(image, "Original Image")
 
 # Divide the image into tiles
-rows, cols = 2,2
+rows, cols = 3,3
 tiles, tile_h, tile_w = divide_image_into_tiles(image, rows, cols)
 
 # # Overlay the grid on the image and display
@@ -165,7 +152,7 @@ for idx, tile in enumerate(tiles):
         encoded_tile = encode_to_base64(tile)
         response = send_to_openai_api(encoded_tile, api_endpoint, api_key)
         all_tile_elements.extend(print_response_and_store(response, idx))
-        break
+        #break
 # Print the combined list of all elements
 print("All Elements from Tiles:", all_tile_elements)
 
@@ -183,6 +170,12 @@ for part_id, component in enumerate(all_tile_elements, start=1):
     print(f"Part ID: {part_id}, Component: {component_name} - URL: {url}")
     store_in_csv(csv_file_path, part_id, component_name, url, tile_id) 
     #break 
+
+
+
+
+
+
 
 
 

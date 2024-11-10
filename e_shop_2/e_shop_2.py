@@ -26,6 +26,7 @@ from googlesearch import search
 import csv
 import streamlit as st 
 import pandas as pd
+from openai import OpenAI
 
 def get_image_from_finder():
     # Set up the app title
@@ -56,14 +57,15 @@ def get_image_from_finder():
         return image, rows, cols    
 # Function to display an image using Matplotlib
 def display_image(img, title="Image"):
-    plt.figure(figsize=(8, 8))
-    if len(img.shape) == 3:  # Color image
-        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    else:  # Grayscale image
-        plt.imshow(img, cmap='gray')
-    plt.title(title)
-    plt.axis('off')
-    plt.show()
+    # Convert BGR to RGB if color image
+    if len(img.shape) == 3:
+        display_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    else:
+        display_img = img
+        
+    # Display image with streamlit
+    st.subheader(title)
+    st.image(display_img, use_column_width=True)
 
 # Function to divide the image into a grid
 def divide_image_into_tiles(image, rows, cols):
@@ -78,6 +80,61 @@ def divide_image_into_tiles(image, rows, cols):
             tiles.append(tile)
     return tiles, tile_h, tile_w
 
+def annotate_tile(tile, part_name):
+    """Add circle and text label to a tile."""
+    annotated_tile = tile.copy()
+    height, width = tile.shape[:2]
+    center = (width // 2, height // 2)
+    radius = min(width, height) // 4  # Circle radius as 1/4 of smallest dimension
+    
+    # Draw circle
+    cv2.circle(annotated_tile, center, radius, (0, 255, 0), 2)  # Green circle
+    
+    # Add text
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 0.8
+    thickness = 2
+    text_size = cv2.getTextSize(part_name, font, font_scale, thickness)[0]
+    
+    # Position text above the circle
+    text_x = center[0] - text_size[0] // 2
+    text_y = center[1] - radius - 10
+    
+    # Add white background for text
+    padding = 5
+    cv2.rectangle(annotated_tile, 
+                 (text_x - padding, text_y - text_size[1] - padding),
+                 (text_x + text_size[0] + padding, text_y + padding),
+                 (255, 255, 255),
+                 -1)
+    
+    # Add text
+    cv2.putText(annotated_tile, part_name, (text_x, text_y), 
+                font, font_scale, (0, 0, 0), thickness)
+    
+    return annotated_tile
+
+def process_and_display_results(image, tiles, responses):
+    """Process tiles with annotations and create final display."""
+    annotated_tiles = []
+    rows = cols = int(len(tiles) ** 0.5)  # Assuming square grid
+    
+    for idx, tile in enumerate(tiles):
+        part_name = responses[idx].choices[0].message.content
+        annotated_tile = annotate_tile(tile, part_name)
+        annotated_tiles.append(annotated_tile)
+    
+    # Stitch tiles back together
+    tile_h, tile_w = tiles[0].shape[:2]
+    final_image = np.zeros((tile_h * rows, tile_w * cols, 3), dtype=np.uint8)
+    
+    for idx, tile in enumerate(annotated_tiles):
+        i, j = divmod(idx, cols)
+        final_image[i * tile_h:(i + 1) * tile_h, 
+                   j * tile_w:(j + 1) * tile_w] = tile
+    
+    return final_image
+
 # Function to overlay grid lines on the image
 def overlay_grid(image, rows, cols):
     img_with_grid = image.copy()
@@ -89,13 +146,23 @@ def overlay_grid(image, rows, cols):
         cv2.line(img_with_grid, (j * tile_w, 0), (j * tile_w, h), (0, 255, 0), 2)
     return img_with_grid
 
-# Function to arrange tiles in a single grid layout
 def arrange_tiles_in_grid(tiles, rows, cols):
-    tile_h, tile_w = tiles[0].shape[:2]
-    grid = np.zeros((rows * tile_h, cols * tile_w, 3), dtype=np.uint8)
-    for idx, tile in enumerate(tiles):
+    # Convert all tiles to BGR first
+    converted_tiles = []
+    for tile in tiles:
+        if tile.shape[2] == 4:  # If image has alpha channel
+            converted_tile = cv2.cvtColor(tile, cv2.COLOR_BGRA2BGR)
+            converted_tiles.append(converted_tile)
+        else:
+            converted_tiles.append(tile)
+    
+    tile_h, tile_w = converted_tiles[0].shape[:2]
+    grid = np.zeros((rows * tile_h, cols * tile_w, 3), dtype=np.uint8)  # Always create 3-channel grid
+    
+    for idx, tile in enumerate(converted_tiles):
         i, j = divmod(idx, cols)
         grid[i * tile_h:(i + 1) * tile_h, j * tile_w:(j + 1) * tile_w] = tile
+    
     return grid
 
 # Function to encode an image to base64
@@ -105,18 +172,18 @@ def encode_to_base64(image):
 
 # Function to send image data to OpenAI API
 def send_to_openai_api(encoded_image, api_endpoint, api_key):
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-     
-    data = {
-        "model": "gpt-4o-mini",
-        "messages": [
+    client = OpenAI(api_key=api_key)
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
             {
-                "role": "user",
+                "role": "system",
+                "content": "You are a machine parts identification expert. When shown an image, identify only the single most prominent machine part visible. Respond with just the generic name of the part (e.g., 'bolt', 'washer', 'bearing'). If no machine parts are visible, respond with 'No machine parts found'."
+            },
+            {
+                "role": "user", 
                 "content": [
-                    {"type": "text", "text": "Please identify any machine components in this image. No rigorous explanation. List the components seperated by commas, if there are no machine parts found please type 'No machine parts found'."},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -126,17 +193,17 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
                 ]
             }
         ],
-        "max_tokens": 300  
-    }
-    response = requests.post(api_endpoint, headers=headers, json=data)
-    return response.json()
-
-def print_response_and_store (response, idx):
-    # Extract and print only the content
-    content = response.get("choices", [{}])[0].get("message", {}).get("content", "No content available")
-    print(f"Tile {idx + 1} Response: {content}")
-    return [[element.strip(), idx +1] for element in content.split(",") if element.strip()]
+        max_tokens=300
+    )
     
+    return response
+
+def print_response_and_store(response, idx):
+    # Extract and print only the content
+    content = response.choices[0].message.content
+    print(f"Tile {idx + 1} Response: {content}")
+    return [[element.strip(), idx + 1] for element in content.split(",") if element.strip()]
+
  
 
 
@@ -181,7 +248,7 @@ def dialogue_return_csv(csv_file_path):
 
 
 
-
+# Modify your existing code to include annotation:
 image, rows, cols = get_image_from_finder()
 display_image(image, "Original Image")
 tiles, tile_h, tile_w = divide_image_into_tiles(image, rows, cols)
@@ -193,16 +260,29 @@ api_key = os.getenv("OPENAI_API_KEY")
 api_endpoint = os.getenv("OPENAI_API_ENDPOINT")
 
 all_tile_elements = []
+annotated_tiles = []  # New list to store annotated tiles
+
 for idx, tile in enumerate(tiles):
-        encoded_tile = encode_to_base64(tile)
-        response = send_to_openai_api(encoded_tile, api_endpoint, api_key)
-        all_tile_elements.extend(print_response_and_store(response, idx))
-        #break
-# Print the combined list of all elements
+    encoded_tile = encode_to_base64(tile)
+    response = send_to_openai_api(encoded_tile, api_endpoint, api_key)
+    elements = print_response_and_store(response, idx)
+    all_tile_elements.extend(elements)
+    
+    # Annotate the tile with the identified part name
+    part_name = elements[0][0] if elements else "No part found"
+    annotated_tile = annotate_tile(tile, part_name)
+    annotated_tiles.append(annotated_tile)
+
+# Stitch annotated tiles back together
+final_image = arrange_tiles_in_grid(annotated_tiles, rows, cols)
+
+# Display the annotated image
+display_image(final_image, "Analyzed Machine Parts")
+
+# Continue with your existing CSV processing
 print("All Elements from Tiles:", all_tile_elements)
 
 availability = {}
-# Initialize CSV file with header
 csv_file_path = "machine_parts_live.csv"
 with open(csv_file_path, mode="w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
@@ -210,11 +290,10 @@ with open(csv_file_path, mode="w", newline="", encoding="utf-8") as file:
 
 for part_id, component in enumerate(all_tile_elements, start=1): 
     component_name, tile_id = component
-    url = search_bossard(component_name)
+    url = component_name    #search_bossard(component_name)
     availability[component_name] = url
     print(f"Part ID: {part_id}, Component: {component_name} - URL: {url}")
     store_in_csv(csv_file_path, part_id, component_name, url, tile_id) 
-    #break 
 
 dialogue_return_csv(csv_file_path)
 

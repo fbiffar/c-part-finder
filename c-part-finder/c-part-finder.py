@@ -1,15 +1,4 @@
-
-
-
-
 #run code with : streamlit run e_shop_2.py
-
-
-
-
-
-
-
 
 # Import necessary libraries
 import cv2
@@ -203,7 +192,7 @@ print("All Elements from Tiles:", all_tile_elements)
 
 availability = {}
 # Initialize CSV file with header
-csv_file_path = "/c-part-finder/result_csv/machine_parts_live.csv"
+csv_file_path = "c-part-finder/result_csv/machine_parts_live.csv"
 with open(csv_file_path, mode="w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["Part ID","Machine Part", "URL", "Tile ID"])

@@ -16,35 +16,14 @@ import streamlit as st
 import pandas as pd
 from openai import OpenAI
 from streamlit_drawable_canvas import st_canvas
+from pydantic import BaseModel
 
-def get_image_from_finder():
-    # Set up the app title
-    st.title("Image Upload and Segmentation Setup")
+class MachinePartIdentifier(BaseModel):
+    name: str
+    certainty: float
 
-    # File uploader for the image
-    uploaded_file = st.file_uploader("Upload an image of machine", type=["png", "jpg", "jpeg"])
 
-    # Row and column input fields
-    rows = st.number_input("Enter the number of rows for segmentation:", min_value=1, max_value=100, step=1, format="%d")
-    cols = st.number_input("Enter the number of columns for segmentation:", min_value=1, max_value=100, step=1, format="%d")
-
-    # Process the uploaded file
-    if uploaded_file:
-        # Open the uploaded image
-        image_pl = Image.open(uploaded_file)
-
-        # Convert the image to a NumPy array (RGB format)
-        image = np.array(image_pl)
-
-        # Display the uploaded image
-        st.image(image, caption="Uploaded Image", use_container_width=True)
-
-        # Confirm and store the inputs
-        if st.button("Confirm"):
-            st.success(f"Image successfully uploaded and segmentation set to {rows} rows and {cols} columns.")
-
-        return image, rows, cols    
-# Function to display an image using Matplotlib
+# Function to display an image in the streamlit app
 def display_image(img, title="Image"):
     # Convert BGR to RGB if color image
     if len(img.shape) == 3:
@@ -56,103 +35,6 @@ def display_image(img, title="Image"):
     st.subheader(title)
     st.image(display_img, use_container_width=True)
 
-# Function to divide the image into a grid
-def divide_image_into_tiles(image, rows, cols):
-    h, w = image.shape[:2]
-    tile_h, tile_w = h // rows, w // cols
-    tiles = []
-    for i in range(rows):
-        for j in range(cols):
-            y_start, x_start = i * tile_h, j * tile_w
-            y_end, x_end = y_start + tile_h, x_start + tile_w
-            tile = image[y_start:y_end, x_start:x_end]
-            tiles.append(tile)
-    return tiles, tile_h, tile_w
-
-def annotate_tile(tile, part_name):
-    """Add circle and text label to a tile."""
-    annotated_tile = tile.copy()
-    height, width = tile.shape[:2]
-    center = (width // 2, height // 2)
-    radius = min(width, height) // 4  # Circle radius as 1/4 of smallest dimension
-    
-    # Draw circle
-    cv2.circle(annotated_tile, center, radius, (0, 255, 0), 2)  # Green circle
-    
-    # Add text
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = 0.8
-    thickness = 2
-    text_size = cv2.getTextSize(part_name, font, font_scale, thickness)[0]
-    
-    # Position text above the circle
-    text_x = center[0] - text_size[0] // 2
-    text_y = center[1] - radius - 10
-    
-    # Add white background for text
-    padding = 5
-    cv2.rectangle(annotated_tile, 
-                 (text_x - padding, text_y - text_size[1] - padding),
-                 (text_x + text_size[0] + padding, text_y + padding),
-                 (255, 255, 255),
-                 -1)
-    
-    # Add text
-    cv2.putText(annotated_tile, part_name, (text_x, text_y), 
-                font, font_scale, (0, 0, 0), thickness)
-    
-    return annotated_tile
-
-def process_and_display_results(image, tiles, responses):
-    """Process tiles with annotations and create final display."""
-    annotated_tiles = []
-    rows = cols = int(len(tiles) ** 0.5)  # Assuming square grid
-    
-    for idx, tile in enumerate(tiles):
-        part_name = responses[idx].choices[0].message.content
-        annotated_tile = annotate_tile(tile, part_name)
-        annotated_tiles.append(annotated_tile)
-    
-    # Stitch tiles back together
-    tile_h, tile_w = tiles[0].shape[:2]
-    final_image = np.zeros((tile_h * rows, tile_w * cols, 3), dtype=np.uint8)
-    
-    for idx, tile in enumerate(annotated_tiles):
-        i, j = divmod(idx, cols)
-        final_image[i * tile_h:(i + 1) * tile_h, 
-                   j * tile_w:(j + 1) * tile_w] = tile
-    
-    return final_image
-
-# Function to overlay grid lines on the image
-def overlay_grid(image, rows, cols):
-    img_with_grid = image.copy()
-    h, w = img_with_grid.shape[:2]
-    tile_h, tile_w = h // rows, w // cols
-    for i in range(1, rows):
-        cv2.line(img_with_grid, (0, i * tile_h), (w, i * tile_h), (0, 255, 0), 2)
-    for j in range(1, cols):
-        cv2.line(img_with_grid, (j * tile_w, 0), (j * tile_w, h), (0, 255, 0), 2)
-    return img_with_grid
-
-def arrange_tiles_in_grid(tiles, rows, cols):
-    # Convert all tiles to BGR first
-    converted_tiles = []
-    for tile in tiles:
-        if tile.shape[2] == 4:  # If image has alpha channel
-            converted_tile = cv2.cvtColor(tile, cv2.COLOR_BGRA2BGR)
-            converted_tiles.append(converted_tile)
-        else:
-            converted_tiles.append(tile)
-    
-    tile_h, tile_w = converted_tiles[0].shape[:2]
-    grid = np.zeros((rows * tile_h, cols * tile_w, 3), dtype=np.uint8)  # Always create 3-channel grid
-    
-    for idx, tile in enumerate(converted_tiles):
-        i, j = divmod(idx, cols)
-        grid[i * tile_h:(i + 1) * tile_h, j * tile_w:(j + 1) * tile_w] = tile
-    
-    return grid
 
 # Function to encode an image to base64
 def encode_to_base64(image):
@@ -162,13 +44,17 @@ def encode_to_base64(image):
 # Function to send image data to OpenAI API
 def send_to_openai_api(encoded_image, api_endpoint, api_key):
     client = OpenAI(api_key=api_key)
-    
-    response = client.chat.completions.create(
-        model="gpt-4o",
+
+    response = client.beta.chat.completions.parse(
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
-                "content": "You are a machine parts identification expert. When shown an image, identify only the single most prominent machine part visible. Respond with the name of the part (e.g., 'bolt', 'washer', 'bearing', 'hinge', 'e-stop', etc.). If no machine parts are visible, respond with 'No part'."
+                "content": """You are a machine parts identification expert with extensive knowledge of industrial components. Your task is to identify the single most prominent machine part located within the red marked region on the provided image. Respond with:
+                The exact name of the part (e.g., 'bolt', 'hinge', 'bearing').
+                A certainty score (0.0 -1.0) based on how confident you are in the identification.
+                If no machine parts are visible, respond with 'No part'. DO NOT MAKE SOMETHING UP
+                and remember the machine element must be within the rectangle box"""
             },
             {
                 "role": "user", 
@@ -182,7 +68,7 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
                 ]
             }
         ],
-        max_tokens=800
+        response_format = MachinePartIdentifier,
     )
     
     return response
@@ -237,13 +123,11 @@ def get_image_from_finder():
     # File uploader for the image
     uploaded_file = st.file_uploader("Upload an image of machine", type=["png", "jpg", "jpeg"])
 
+    
     if uploaded_file:
-        # Open the uploaded image
+     # Open the uploaded image
         image_pl = Image.open(uploaded_file)
         image = np.array(image_pl)
-        
-        # Display the uploaded image
-        st.image(image, caption="Uploaded Image", use_container_width=True)
         return image
     
     return None
@@ -278,6 +162,16 @@ def annotate_part(image, roi_coords, part_name):
                 font, font_scale, (0, 0, 0), thickness)
     
     return annotated
+
+def mark_roi_with_border(image, roi_coords):
+    """Mark the selected ROI with a red border on the image."""
+    annotated_image = image.copy()
+    left, top, right, bottom = roi_coords
+    
+    # Draw a red rectangle to mark the ROI
+    cv2.rectangle(annotated_image, (left, top), (right, bottom), (0, 0, 255), 2)  # Red border, thickness=2
+    
+    return annotated_image
 
 def select_roi(image):
     st.write("Draw a rectangle around the part you want to identify")
@@ -331,12 +225,14 @@ def select_roi(image):
         
         # Extract ROI
         roi = image[top:bottom, left:right]
+
+        image_with_roi = mark_roi_with_border(image, (left, top, right, bottom))
         
         if roi.size > 0:
             st.write("Selected Region (Original Size):")
             st.image(roi, use_container_width=False)
             # Return the exact coordinates that were used for the ROI
-            return roi, (int(left), int(top), int(right), int(bottom))
+            return image_with_roi, (int(left), int(top), int(right), int(bottom))
     
     return None, None
 
@@ -405,6 +301,8 @@ def main():
 
     # Get and display image
     image = get_image_from_finder()
+
+
     
     if image is not None:
         # Initialize final output if needed
@@ -424,7 +322,7 @@ def main():
             
             # Search for part
             url = search_bossard(part_name)
-            
+
             # Store annotation
             st.session_state.annotations.append((roi_coords, part_name, url))
             
@@ -441,9 +339,11 @@ def main():
                 st.markdown(f"[View Part on Bossard]({url})")
             else:
                 st.write("No product link available")
-        
+
+  
         # Display final output image
         if st.session_state.final_output is not None:
+            print ("final out put")
             st.write("Final Output Image:")
             st.image(st.session_state.final_output, use_container_width=True)
         

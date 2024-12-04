@@ -13,6 +13,8 @@ required_libraries = [
     "requests",  # For HTTP requests
     "pandas",  # For handling CSV and data
     "streamlit",  # For web app interface
+    "streamlit-drawable-canvas",  # For drawing on the web app
+    "openai",  # For GPT API
 ]
 
 # Install each library if not already installed

@@ -15,6 +15,7 @@ from googlesearch import search
 from pydantic import BaseModel
 from openai import OpenAI
 import os
+import prepare_excel
 
 # Pydantic model for OpenAI API response
 class MachinePartIdentifier(BaseModel):
@@ -140,7 +141,7 @@ def save_annotations_to_csv(file_path, annotations):
         for idx, (roi_coords, part_name, url) in enumerate(annotations):
             writer.writerow([idx + 1, part_name, url, roi_coords])
 
-def send_to_openai_api(encoded_image, api_endpoint, api_key):
+def send_to_openai_api(encoded_image, api_endpoint, api_key, list_parts):
     client = OpenAI(api_key=api_key)
 
     response = client.beta.chat.completions.parse(
@@ -148,11 +149,17 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
         messages=[
             {
                 "role": "system",
-                "content": """You are a machine parts identification expert with extensive knowledge of industrial components. Your task is to identify the single most prominent machine part located within the red marked region on the provided image. Respond with:
-                The exact name of the part (e.g., 'bolt', 'hinge', 'bearing').
-                A certainty score (0.0 -1.0) based on how confident you are in the identification.
-                If no machine parts are visible, respond with 'No part'. DO NOT MAKE SOMETHING UP
-                and remember the machine element must be within the rectangle box"""
+                "content": f"""You are a machine parts identification expert with extensive knowledge of industrial components. Your task is to analyze the red-marked region in the provided image and determine if it matches any element in the given list: {list_parts}.
+
+                - Examine the red-marked region in the context of the image and identify the machine part it represents.
+                - Check if the identified part matches more or less any element in the provided list.
+                - If the part matches an item in the list, return the name of the matching part from the list.
+                - If the red-marked region does not match any element in the list, or if the region is blank or unrecognizable, respond with 'No part'.
+
+                Your response must include:
+                - The exact name of the matching part from the list or 'No part' if there is no match.
+                - A certainty score (0.0 - 1.0) indicating your confidence in the identification."""
+
             },
             {
                 "role": "user", 
@@ -166,7 +173,7 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key):
                 ]
             }
         ],
-        response_format = MachinePartIdentifier,
+        response_format=MachinePartIdentifier,
     )
     
     return response
@@ -220,7 +227,14 @@ def main():
         st.session_state.final_output = None
         st.session_state.pending_annotation = None  # Hold pending annotation
         st.session_state.display_preview = False  # Control the display of the preview image
-
+    
+    #Prepare Dataset
+    file_path = 'c-part-finder/BossardParts.xlsx'
+    # Load the Excel file
+    df = pd.read_excel(file_path)
+    #select 2nd column with partnames 
+    part_list = df.iloc[:, 1].tolist()
+    
     # Step 1: Upload image
     image = load_image()
 
@@ -247,7 +261,7 @@ def main():
             with col1:
                 if st.button("Auto Identify Part"):
                     encoded_roi = encode_image_to_base64(roi)
-                    response = send_to_openai_api(encoded_roi, api_endpoint, api_key)
+                    response = send_to_openai_api(encoded_roi, api_endpoint, api_key, part_list)
 
                     if response and response.choices:
                         parsed_data = response.choices[0].message.parsed
@@ -283,7 +297,7 @@ def main():
             with col1:
                 if st.button("Confirm Annotation"):
                     # Add to final annotations
-                    st.session_state.annotations.append((roi_coords, part_name, url))
+                    #st.session_state.annotations.append((roi_coords, part_name, url))
                     st.session_state.final_output = preview_image
                     st.session_state.pending_annotation = None  # Clear pending annotation
                     st.session_state.display_preview = False

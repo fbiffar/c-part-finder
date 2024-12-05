@@ -15,7 +15,7 @@ from googlesearch import search
 from pydantic import BaseModel
 from openai import OpenAI
 import os
-from helper_functions import create_pptx
+from helper_functions.create_pptx import *
 from helper_functions import json_handler
 
 # Pydantic model for OpenAI API response
@@ -336,7 +336,8 @@ def main():
 
         # Step 7: Save Results
         if st.button("Save Annotated Image with Links"):
-            create_pptx.create_pptx_with_annotations(img, st.session_state.annotate, output_path="annotated_presentation.pptx")
+            print(st.session_state.annotate)
+            create_pptx_with_annotations(img, st.session_state.annotate, output_path="annotated_presentation.pptx")
             output_path = "annotations.csv"
             save_annotations_to_csv(output_path, st.session_state.annotations)
             st.success(f"Annotations saved to {output_path}")

@@ -1,6 +1,12 @@
 import os
 import json
+import re
 from playwright.sync_api import sync_playwright
+
+def sanitize_filename(name):
+    # Replace spaces with underscores and remove any non-alphanumeric characters
+    return re.sub(r'[^a-zA-Z0-9]', '_', name)
+
 
 def main():
     # Ensure the image directory exists
@@ -81,34 +87,59 @@ def main():
             href = locator.nth(i).get_attribute('href')
             print(f"Element {i + 1} href: {href}")
 
-            child_elements = locator.nth(i).locator('> *')
-            child_count = child_elements.count()
-            print(f"Element {i + 1} has {child_count} direct child elements.")
-            for j in range(child_count):
-                tag_name = child_elements.nth(j).evaluate("el => el.tagName")
-                class_name = child_elements.nth(j).get_attribute('class')
-                print(f"Child {j + 1}: Tag Name = {tag_name}, Class = {class_name}")
-
-            #  Search for img.image--subcategory and print the media URL
+            # Search for img.image--subcategory or img.image--category
             img_locator = locator.nth(i).locator('img.image--subcategory, img.image--category')
+            category_type = None
+            img_src = None
             if img_locator.count() > 0:
                 img_src = img_locator.get_attribute('src')
+                category_type = 'subcategory' if 'image--subcategory' in img_locator.get_attribute('class') else 'category'
                 print(f"Element {i + 1} image URL: {img_src}")
             else:
-                print(f"Element {i + 1} has no image with class 'image--subcategory'.")
+                print(f"Element {i + 1} has no image with class 'image--subcategory' or 'image--category'.")
 
             # Search for h3.headingClasses and print the text content
             h3_locator = locator.nth(i).locator('h3.headingClasses')
+            category_name = None
             if h3_locator.count() > 0:
-                h3_text = h3_locator.text_content()
-                print(f"Element {i + 1} H3 text content: {h3_text}")
+                category_name = h3_locator.text_content().strip()
+                print(f"Element {i + 1} H3 text content: {category_name}")
             else:
                 print(f"Element {i + 1} has no H3 with class 'headingClasses'.")
 
+            # Save image and prepare JSON entry
+            if img_src and category_name:
+                sanitized_name = sanitize_filename(category_name)
+                # Download and save the image
+                img_data = page.evaluate(f"""
+                    async () => {{
+                        const response = await fetch('{img_src}');
+                        const buffer = await response.arrayBuffer();
+                        return Array.from(new Uint8Array(buffer));
+                    }}
+                """)
+                img_bytes = bytes(img_data)  # Convert list of integers to bytes
+                img_path = f'./img/{sanitized_name}.jpeg'
+                with open(img_path, 'wb') as img_file:
+                    img_file.write(img_bytes)
+                print(f"Image for element {i + 1} saved as {img_path}.")
+
+                # Add entry to categories list
+                categories.append({
+                    "category_type": category_type,
+                    "category_name": category_name,
+                    "category_link": href,
+                    "category_img": img_path
+                })
 
         # Close browser
         browser.close()
         print("Script completed successfully!")
+
+     # Save categories to JSON
+    with open('categories.json', 'w', encoding='utf-8') as json_file:
+        json.dump({"categories": categories}, json_file, ensure_ascii=False, indent=4)
+    print("Categories saved to categories.json")
 
 if __name__ == "__main__":
     main()

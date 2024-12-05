@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from openai import OpenAI
 import os
 import prepare_excel
+import create_pptx
 
 # Pydantic model for OpenAI API response
 class MachinePartIdentifier(BaseModel):
@@ -31,8 +32,8 @@ def load_image():
     st.title("Machine Part Identifier")
     uploaded_file = st.file_uploader("Upload an image of machine", type=["png", "jpg", "jpeg"])
     if uploaded_file:
-        return np.array(Image.open(uploaded_file))
-    return None
+        return np.array(Image.open(uploaded_file)), Image.open(uploaded_file)
+    return None, None
 
 def encode_image_to_base64(image):
     """Convert an image to base64 encoding."""
@@ -230,7 +231,7 @@ def main():
         st.session_state.final_output = None
         st.session_state.pending_annotation = None  # Hold pending annotation
         st.session_state.display_preview = False  # Control the display of the preview image
-    
+        st.session_state.annotate = []
     #Prepare Dataset
     file_path = 'c-part-finder/BossardParts2.xlsx'
     # Load the Excel file
@@ -246,7 +247,7 @@ def main():
     # df_2.to_excel('c-part-finder/BossardParts2.xlsx', index=False)
     
     # Step 1: Upload image
-    image = load_image()
+    image, img = load_image()
 
     if image is not None:
         # Initialize final output
@@ -311,6 +312,7 @@ def main():
                     st.session_state.final_output = preview_image
                     st.session_state.pending_annotation = None  # Clear pending annotation
                     st.session_state.display_preview = False
+                    st.session_state.annotate.append((roi_coords, part_name))
                     st.success("Annotation confirmed and added to the final image.")
 
             with col2:
@@ -334,6 +336,7 @@ def main():
 
         # Step 7: Save Results
         if st.button("Save Annotated Image with Links"):
+            create_pptx.create_pptx_with_annotations(img, st.session_state.annotate, output_path="annotated_presentation.pptx")
             output_path = "annotations.csv"
             save_annotations_to_csv(output_path, st.session_state.annotations)
             st.success(f"Annotations saved to {output_path}")

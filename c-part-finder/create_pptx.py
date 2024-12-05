@@ -3,8 +3,10 @@ from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from PIL import Image
+import numpy as np
+import io
 
-def create_pptx_with_annotations(image_path, annotations, output_path="annotated_presentation.pptx"):
+def create_pptx_with_annotations(img, annotations, output_path="annotated_presentation.pptx"):
     """
     Generate a PowerPoint slide with the given image and annotations.
     
@@ -13,8 +15,11 @@ def create_pptx_with_annotations(image_path, annotations, output_path="annotated
     - annotations: List of tuples containing annotation details [(coords, part_name), ...].
     - output_path: Path where the generated PowerPoint file will be saved.
     """
-    # Load the image to get its dimensions
-    img = Image.open(image_path)
+    # Convert the PIL Image to a file-like object (BytesIO)
+    img_bytes = io.BytesIO()
+    img.save(img_bytes, format="PNG")
+    img_bytes.seek(0)  # Reset the file pointer to the beginning
+
     img_width, img_height = img.size
 
     # Create PowerPoint presentation
@@ -33,7 +38,7 @@ def create_pptx_with_annotations(image_path, annotations, output_path="annotated
     # Center the image on the slide
     image_left = (slide_width - image_width_on_slide) / 2  # Center horizontally
     image_top = (slide_height - image_height_on_slide) / 2  # Center vertically
-    slide_image = slide.shapes.add_picture(image_path, image_left, image_top, width=image_width_on_slide, height=image_height_on_slide)
+    slide_image = slide.shapes.add_picture(img_bytes, image_left, image_top, width=image_width_on_slide, height=image_height_on_slide)
 
     # Calculate scaling factors for annotation placement
     scale_x = image_width_on_slide / img_width
@@ -88,14 +93,15 @@ def create_pptx_with_annotations(image_path, annotations, output_path="annotated
     print(f"PowerPoint saved to {output_path}")
 
 
-# Example Usage
-image_path = "c-part-finder/images/conveyor_machine.png"
-annotations = [
-    # Example annotations [(left, top, right, bottom), "part name"]
-    [(100, 150, 200, 250), "Screw"],
-    [(300, 350, 400, 450), "Bolt"],
-    [(150,50,200,100), "Hinge"],
-]
-output_path = "annotated_presentation_dynamic_labels_centered.pptx"
+# # Example Usage
+# image_path = "c-part-finder/images/conveyor_machine.png"
+# img = Image.open(image_path)
+# annotations = [
+#     # Example annotations [(left, top, right, bottom), "part name"]
+#     [(100, 150, 200, 250), "Screw"],
+#     [(300, 350, 400, 450), "Bolt"],
+#     [(150,50,200,100), "Hinge"],
+# ]
+# output_path = "annotated_presentation_dynamic_labels_centered.pptx"
 
-create_pptx_with_annotations(image_path, annotations, output_path)
+# create_pptx_with_annotations(img, annotations, output_path)

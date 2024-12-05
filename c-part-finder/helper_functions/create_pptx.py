@@ -67,14 +67,14 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
     scale_x = image_width_on_slide / img_width
     scale_y = image_height_on_slide / img_height
 
-    # Free space dimensions for labels and images
-    free_space_left = image_left - Inches(2.0)  # Margin for labels on the left
-    free_space_right = image_left + image_width_on_slide + Inches(0.2)  # Margin for labels on the right
+    # Define starting positions for labels and images
+    current_label_top_left = Inches(0.5)  # Start for left-side annotations
+    current_label_top_right = Inches(0.5)  # Start for right-side annotations
     free_space_width = Inches(2.0)  # Fixed width for labels and images
 
-    # Initial top position for labels and images
-    current_label_top_left = Inches(0.5)  # Start from the top of the slide for left side
-    current_label_top_right = Inches(0.5)  # Start from the top of the slide for right side
+    # Calculate horizontal positions for left and right labels
+    free_space_left = image_left - free_space_width - Inches(0.5)  # Margin for left-side labels
+    free_space_right = image_left + image_width_on_slide + Inches(0.5)  # Margin for right-side labels
 
     # Add annotations
     for idx, (coords, category_name, subcategory_name, url) in enumerate(annotations):
@@ -95,15 +95,23 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
         marked_center_x = (left_scaled + right_scaled) / 2
         marked_center_y = (top_scaled + bottom_scaled) / 2
 
-        # Determine label position (left or right side)
-        if idx % 2 == 0:  # Even indices go to the right side
+        # Draw the box around the part
+        shape = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE, left_scaled, top_scaled,
+            right_scaled - left_scaled, bottom_scaled - top_scaled
+        )
+        shape.line.color.rgb = RGBColor(255, 0, 0)  # Red border
+        shape.fill.background()  # Transparent fill
+
+        # Determine label placement: left or right side
+        if idx % 2 == 0:  # Even index: Right side
             label_left = free_space_right
             current_label_top = current_label_top_right
-            current_label_top_right += Inches(1.0)  # Increment for the next right-side annotation
-        else:  # Odd indices go to the left side
+            current_label_top_right += Inches(2.0)  # Increment position for next annotation
+        else:  # Odd index: Left side
             label_left = free_space_left
             current_label_top = current_label_top_left
-            current_label_top_left += Inches(1.0)  # Increment for the next left-side annotation
+            current_label_top_left += Inches(2.0)  # Increment position for next annotation
 
         label_height = Inches(0.5)  # Fixed height for labels
         image_spacing = Inches(0.2)  # Space between label and image
@@ -128,7 +136,7 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
             img_bytes_part = io.BytesIO()
             img_part.save(img_bytes_part, format="PNG")
             img_bytes_part.seek(0)
-            
+
             # Calculate the size for the small image
             part_image_width = Inches(1.5)
             part_aspect_ratio = img_part.height / img_part.width
@@ -142,11 +150,11 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
                 height=part_image_height
             )
 
-            # Update the bottom position for the next annotation
-            current_label_top = image_bottom_y + part_image_height + Inches(0.5)
-        else:
-            # If no image, increment the current label top just for the label and spacing
-            current_label_top += label_height + Inches(0.5)
+            # Adjust for image height
+            if idx % 2 == 0:
+                current_label_top_right = image_bottom_y + part_image_height + Inches(0.5)
+            else:
+                current_label_top_left = image_bottom_y + part_image_height + Inches(0.5)
 
         # Add connecting arrow/line from the marked region to the label
         arrow = slide.shapes.add_connector(
@@ -154,7 +162,7 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
             marked_center_x,
             marked_center_y,
             label_left + free_space_width / 2,  # Center of the label box
-            current_label_top - Inches(1.0)  # Adjust to point at the label
+            current_label_top + label_height / 2  # Adjust to point at the center of the label
         )
         arrow.line.color.rgb = RGBColor(0, 0, 255)  # Blue arrow
 

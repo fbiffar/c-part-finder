@@ -149,16 +149,19 @@ def send_to_openai_api(encoded_image, api_endpoint, api_key, list_parts):
         messages=[
             {
                 "role": "system",
-                "content": f"""You are a machine parts identification expert with extensive knowledge of industrial components. Your task is to analyze the red-marked region in the provided image and determine if it matches any element in the given list: {list_parts}.
+                "content": f"""You are an industrial components identification expert specializing in analyzing images of machinery and identifying parts that match a given product list. Your task is to review the red-marked region in the provided image and determine which product category from the given list best matches the marked area.
+                Product Categories: {list_parts}
+                Steps to Follow:
 
-                - Examine the red-marked region in the context of the image and identify the machine part it represents.
-                - Check if the identified part matches more or less any element in the provided list.
-                - If the part matches an item in the list, return the name of the matching part from the list.
-                - If the red-marked region does not match any element in the list, or if the region is blank or unrecognizable, respond with 'No part'.
+                Examine the red-marked region in the context of the machine/product shown in the image.
+                Identify the part or category represented in the marked region.
+                Cross-check the identified part with the provided product categories list.
+                Return the matching product category and your confidence level in the identification.
+                Response Format:
 
-                Your response must include:
-                - The exact name of the matching part from the list or 'No part' if there is no match.
-                - A certainty score (0.0 - 1.0) indicating your confidence in the identification."""
+                Exact name of the matching product category from the list
+                Certainty score (0.0 - 1.0) indicating your confidence in the identification
+                Context: You must carefully analyze the marked region while considering the overall machine/product context to ensure accurate identification."""
 
             },
             {
@@ -229,11 +232,18 @@ def main():
         st.session_state.display_preview = False  # Control the display of the preview image
     
     #Prepare Dataset
-    file_path = 'c-part-finder/BossardParts.xlsx'
+    file_path = 'c-part-finder/BossardParts2.xlsx'
     # Load the Excel file
     df = pd.read_excel(file_path)
     #select 2nd column with partnames 
+
+    
+    # df_2 = df.iloc[:, 1].str.replace(r'\s*\(\d{1,3}\)$', '', regex=True)
+
     part_list = df.iloc[:, 1].tolist()
+
+    # #export df_2 to excel
+    # df_2.to_excel('c-part-finder/BossardParts2.xlsx', index=False)
     
     # Step 1: Upload image
     image = load_image()

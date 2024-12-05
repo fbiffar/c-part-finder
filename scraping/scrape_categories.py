@@ -2,13 +2,16 @@ import os
 import json
 import re
 from playwright.sync_api import sync_playwright
+import time
+
+MAX_RECURSION_DEPTH = 3
 
 def sanitize_filename(name):
     # Replace spaces with underscores and remove any non-alphanumeric characters
     return re.sub(r'[^a-zA-Z0-9]', '_', name)
 
 
-def scrape_categories(page, base_url, url, categories, parent_category=None):
+def scrape_categories(page, base_url, url, categories, parent_category=None, recursion_level = 0):
     # Navigate to the given URL
     page.goto(url)
     page.wait_for_load_state("networkidle")
@@ -61,12 +64,16 @@ def scrape_categories(page, base_url, url, categories, parent_category=None):
             }
             categories.append(category_entry)
             # Collect category links for later recursive scraping
-            if category_type == 'category' and href:
-                category_links.append((href, category_name))
+            #if category_type == 'category' and href:
+            #    category_links.append((href, category_name))
+            #if category_type == 'category' and href:
+            category_links.append((href, category_name))
 
+    time.sleep(1)
     # After collecting all categories, recursively scrape subcategories
-    for link, name in category_links:
-        scrape_categories(page, base_url, link, categories, name)
+    if recursion_level < MAX_RECURSION_DEPTH:
+        for link, name in category_links:
+            scrape_categories(page, base_url, link, categories, name, recursion_level=recursion_level+1)
 
 def main():
     os.makedirs('./img', exist_ok=True)

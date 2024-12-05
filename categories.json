@@ -1,0 +1,669 @@
+{
+    "categories": [
+        {
+            "category_type": "category",
+            "category_name": "Norm- und Standard Verbindungselemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/norm-und-standard-verbindungselemente/c/01.100/",
+            "category_img": "./img/Norm__und_Standard_Verbindungselemente.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Direktverschraubungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/direktverschraubungen/c/01.200/",
+            "category_img": "./img/Direktverschraubungen.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Sicherungselemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/sicherungselemente/c/01.300/",
+            "category_img": "./img/Sicherungselemente.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Einpresstechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/einpresstechnik/c/02.100/",
+            "category_img": "./img/Einpresstechnik.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Niettechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/c/02.200/",
+            "category_img": "./img/Niettechnik.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Gewindeeinsätze",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/gewindeeinsaetze/c/02.300/",
+            "category_img": "./img/Gewindeeins_tze.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Clip-Befestigungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/clipbefestigungen/c/02.400/",
+            "category_img": "./img/Clip_Befestigungen.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Schweisstechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/schweisstechnik/c/02.500/",
+            "category_img": "./img/Schweisstechnik.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Verbindungstechnik zum Einbetten und Aufkleben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/spezifische-verbindungstechnologien/verbindungstechnik-zum-einbetten-und-aufkleben/c/02.600/",
+            "category_img": "./img/Verbindungstechnik_zum_Einbetten_und_Aufkleben.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Elektrotechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/c/03.100/",
+            "category_img": "./img/Elektrotechnik.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Zugangs- und Verbindungslösungen und Bedienelemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/zugangs-und-verbindungsloesungen-und-bedienelemente/c/03.200/",
+            "category_img": "./img/Zugangs__und_Verbindungsl_sungen_und_Bedienelemente.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Flüssigkeitsmanagement",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/fluessigkeitsmanagement/c/03.300/",
+            "category_img": "./img/Fl_ssigkeitsmanagement.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Dichtungstechnologie",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/dichtungstechnologie/c/03.400/",
+            "category_img": "./img/Dichtungstechnologie.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Zeichnungsteile",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/engineered-products/",
+            "category_img": "./img/Zeichnungsteile.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Oberflächenbeschichtungen",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/oberflaechenbeschichtungen/",
+            "category_img": "./img/Oberfl_chenbeschichtungen.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Online Bestellservice für Drehteile & Frästeile",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/real-time-manufacturing-services/",
+            "category_img": "./img/Online_Bestellservice_f_r_Drehteile___Fr_steile.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Einfaches Fügen von Leichtbaumaterialien mit MM-Welding",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/marken/schweisstechnik/mm-welding/",
+            "category_img": "./img/Einfaches_F_gen_von_Leichtbaumaterialien_mit_MM_Welding.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Innovationen",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/innovationen/",
+            "category_img": "./img/Innovationen.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Kunden-Erfolgsgeschichten",
+            "category_link": "https://www.bossard.com/ch-de/ueber-uns/success-stories/?topics=acf1132aa13442d7b5fe0b455c557c21",
+            "category_img": "./img/Kunden_Erfolgsgeschichten.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Marken",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/marken/",
+            "category_img": "./img/Marken.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Anwendungshinweise / Gefahrensymbole",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/anwendungshinweise/",
+            "category_img": "./img/Anwendungshinweise___Gefahrensymbole.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "E-Shop Helpcenter",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/e-shop-informationen/",
+            "category_img": "./img/E_Shop_Helpcenter.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "category",
+            "category_name": "Einfaches Nachbestellen per Scan App",
+            "category_link": "https://www.bossard.com/ch-de/produktloesungen/e-shop-informationen/scan-app/",
+            "category_img": "./img/Einfaches_Nachbestellen_per_Scan_App.jpeg",
+            "parent_category": null
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schrauben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/norm-und-standard-verbindungselemente/schrauben/c/01.100.100/",
+            "category_img": "./img/Schrauben.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Muttern",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/norm-und-standard-verbindungselemente/muttern/c/01.100.200/",
+            "category_img": "./img/Muttern.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Scheiben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/norm-und-standard-verbindungselemente/scheiben/c/01.100.300/",
+            "category_img": "./img/Scheiben.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Stifte",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/norm-und-standard-verbindungselemente/stifte/c/01.100.400/",
+            "category_img": "./img/Stifte.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Klemm- und Positionierelemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/norm-und-standard-verbindungselemente/klemm-und-positionierelemente/c/01.100.500/",
+            "category_img": "./img/Klemm__und_Positionierelemente.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Verankerungssysteme",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/norm-und-standard-verbindungselemente/verankerungssysteme/c/01.100.600/",
+            "category_img": "./img/Verankerungssysteme.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Ausrüstung für Norm- und Standard Elemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/werkzeuge-und-ausruestung-fuer-norm-und-standard-elemente/c/01.100.700/",
+            "category_img": "./img/Werkzeuge_und_Ausr_stung_f_r_Norm__und_Standard_Elemente.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Zubehör und Schutzelemente für Norm und Standard Elemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/zubehoer-und-schutzelemente-fuer-norm-und-standard-elemente/c/01.100.800/",
+            "category_img": "./img/Zubeh_r_und_Schutzelemente_f_r_Norm_und_Standard_Elemente.jpeg",
+            "parent_category": "Norm- und Standard Verbindungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Direktverschraubungen in Holz",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/direktverschraubungen/direktverschraubungen-in-holz/c/01.200.100/",
+            "category_img": "./img/Direktverschraubungen_in_Holz.jpeg",
+            "parent_category": "Direktverschraubungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Direktverschraubungen in Metalle",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/direktverschraubungen/direktverschraubungen-in-metalle/c/01.200.200/",
+            "category_img": "./img/Direktverschraubungen_in_Metalle.jpeg",
+            "parent_category": "Direktverschraubungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Direktverschraubungen in Kunststoffe",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik/direktverschraubungen/direktverschraubungen-in-kunststoffe/c/01.200.300/",
+            "category_img": "./img/Direktverschraubungen_in_Kunststoffe.jpeg",
+            "parent_category": "Direktverschraubungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Direktverschraubungen in Beton",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/direktverschraubungen/direktverschraubungen-in-beton/c/01.200.400/",
+            "category_img": "./img/Direktverschraubungen_in_Beton.jpeg",
+            "parent_category": "Direktverschraubungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Ausrüstung zu Direktverschraubungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/direktverschraubungen/werkzeuge-und-ausruestung-zu-direktverschraubungen/c/01.200.500/",
+            "category_img": "./img/Werkzeuge_und_Ausr_stung_zu_Direktverschraubungen.jpeg",
+            "parent_category": "Direktverschraubungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Zubehör zu Direktverschraubungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/direktverschraubungen/zubehoer-zu-direktverschraubungen/c/01.200.600/",
+            "category_img": "./img/Zubeh_r_zu_Direktverschraubungen.jpeg",
+            "parent_category": "Direktverschraubungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Sicherungsschrauben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/sicherungselemente/sicherungsschrauben/c/01.300.500/",
+            "category_img": "./img/Sicherungsschrauben.jpeg",
+            "parent_category": "Sicherungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Sicherungsmuttern",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/sicherungselemente/sicherungsmuttern/c/01.300.600/",
+            "category_img": "./img/Sicherungsmuttern.jpeg",
+            "parent_category": "Sicherungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Sicherungsscheiben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/sicherungselemente/sicherungsscheiben/c/01.300.100/",
+            "category_img": "./img/Sicherungsscheiben.jpeg",
+            "parent_category": "Sicherungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Wellen- und Nabensicherungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/sicherungselemente/wellen-und-nabensicherungen/c/01.300.300/",
+            "category_img": "./img/Wellen__und_Nabensicherungen.jpeg",
+            "parent_category": "Sicherungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge für Sicherungselemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/sicherungselemente/werkzeuge-fuer-sicherungselemente/c/01.300.700/",
+            "category_img": "./img/Werkzeuge_f_r_Sicherungselemente.jpeg",
+            "parent_category": "Sicherungselemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Einpressbefestiger für metallische Werkstoffe",
+            "category_link": "https://www.bossard.com/eshop/ch-de/einpresstechnik/einpressbefestiger-fuer-metallische-werkstoffe/c/02.100.200/",
+            "category_img": "./img/Einpressbefestiger_f_r_metallische_Werkstoffe.jpeg",
+            "parent_category": "Einpresstechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Einpressbefestiger für Printplatten und andere Kunststoffe",
+            "category_link": "https://www.bossard.com/eshop/ch-de/einpresstechnik/einpressbefestiger-fuer-printplatten-und-andere-kunststoffe/c/02.100.100/",
+            "category_img": "./img/Einpressbefestiger_f_r_Printplatten_und_andere_Kunststoffe.jpeg",
+            "parent_category": "Einpresstechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Ausrüstung für die Einpresstechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/einpresstechnik/werkzeuge-und-ausruestung-fuer-die-einpresstechnik/c/02.100.300/",
+            "category_img": "./img/Werkzeuge_und_Ausr_stung_f_r_die_Einpresstechnik.jpeg",
+            "parent_category": "Einpresstechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Blindniete",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/blindniete/c/02.200.100/",
+            "category_img": "./img/Blindniete.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schwerlast-Blindniete",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/schwerlastblindniete/c/02.200.400/",
+            "category_img": "./img/Schwerlast_Blindniete.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Blindnietmuttern",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/blindnietmuttern/c/02.200.200/",
+            "category_img": "./img/Blindnietmuttern.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Blindnietschrauben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/blindnietschrauben/c/02.200.300/",
+            "category_img": "./img/Blindnietschrauben.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schliessringbolzen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/schliessringbolzen/c/02.200.500/",
+            "category_img": "./img/Schliessringbolzen.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Hohlniete",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/hohlniete/c/02.200.600/",
+            "category_img": "./img/Hohlniete.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Stanzniete",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/stanzniete/c/02.200.700/",
+            "category_img": "./img/Stanzniete.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Vollniete",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/niettechnik/vollniete/c/02.200.800/",
+            "category_img": "./img/Vollniete.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Ausrüstung für die Niettechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/niettechnik/werkzeuge-und-ausruestung-fuer-die-niettechnik/c/02.200.900/",
+            "category_img": "./img/Werkzeuge_und_Ausr_stung_f_r_die_Niettechnik.jpeg",
+            "parent_category": "Niettechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Kompressionsbegrenzer",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/gewindeeinsaetze/kompressionsbegrenzer/c/02.300.800/",
+            "category_img": "./img/Kompressionsbegrenzer.jpeg",
+            "parent_category": "Gewindeeinsätze"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Gewindeeinsätze für Kunststoffmaterialien",
+            "category_link": "https://www.bossard.com/eshop/ch-de/gewindeeinsaetze/gewindeeinsaetze-fuer-kunststoffmaterialien/c/02.300.200/",
+            "category_img": "./img/Gewindeeins_tze_f_r_Kunststoffmaterialien.jpeg",
+            "parent_category": "Gewindeeinsätze"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Gewindeeinsätze für Leichtmetall- und Kunststoffmaterialien",
+            "category_link": "https://www.bossard.com/eshop/ch-de/gewindeeinsaetze/gewindeeinsaetze-fuer-leichtmetall-und-kunststoffmaterialien/c/02.300.300/",
+            "category_img": "./img/Gewindeeins_tze_f_r_Leichtmetall__und_Kunststoffmaterialien.jpeg",
+            "parent_category": "Gewindeeinsätze"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Gewindeeinsätze für Holz- und weiche Kunststoffmaterialien",
+            "category_link": "https://www.bossard.com/eshop/ch-de/gewindeeinsaetze/gewindeeinsaetze-fuer-holz-und-weiche-kunststoffmaterialien/c/02.300.100/",
+            "category_img": "./img/Gewindeeins_tze_f_r_Holz__und_weiche_Kunststoffmaterialien.jpeg",
+            "parent_category": "Gewindeeinsätze"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Gewindeeinsätze für Leichtmetallmaterialien",
+            "category_link": "https://www.bossard.com/eshop/ch-de/gewindeeinsaetze/gewindeeinsaetze-fuer-leichtmetallmaterialien/c/02.300.400/",
+            "category_img": "./img/Gewindeeins_tze_f_r_Leichtmetallmaterialien.jpeg",
+            "parent_category": "Gewindeeinsätze"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Ausrüstung für Gewindeeinsätze",
+            "category_link": "https://www.bossard.com/eshop/ch-de/gewindeeinsaetze/werkzeuge-und-ausruestung-fuer-gewindeeinsaetze/c/02.300.500/",
+            "category_img": "./img/Werkzeuge_und_Ausr_stung_f_r_Gewindeeins_tze.jpeg",
+            "parent_category": "Gewindeeinsätze"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Befestigungsklammern für Verkleidungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/clipbefestigungen/befestigungsklammern-fuer-verkleidungen/c/02.400.100/",
+            "category_img": "./img/Befestigungsklammern_f_r_Verkleidungen.jpeg",
+            "parent_category": "Clip-Befestigungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Clip-Befestigungselemente mit Gewinde und Scheiben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/clipbefestigungen/clipbefestigungselemente-mit-gewinde-und-scheiben/c/02.400.200/",
+            "category_img": "./img/Clip_Befestigungselemente_mit_Gewinde_und_Scheiben.jpeg",
+            "parent_category": "Clip-Befestigungen"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schweissmuttern",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/schweisstechnik/schweissmuttern/c/02.500.100/",
+            "category_img": "./img/Schweissmuttern.jpeg",
+            "parent_category": "Schweisstechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schweissen CD-Spitzenzündung",
+            "category_link": "https://www.bossard.com/eshop/ch-de/spezifische-verbindungstechnologien/schweisstechnik/schweissen-cdspitzenzuendung/c/02.500.200/",
+            "category_img": "./img/Schweissen_CD_Spitzenz_ndung.jpeg",
+            "parent_category": "Schweisstechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schweissen GLV-Hubzündung",
+            "category_link": "https://www.bossard.com/eshop/ch-de/spezifische-verbindungstechnologien/schweisstechnik/schweissen-glvhubzuendung/c/02.500.400/",
+            "category_img": "./img/Schweissen_GLV_Hubz_ndung.jpeg",
+            "parent_category": "Schweisstechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "MultiMaterial-Welding®",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/spezifische-verbindungstechnologien/schweisstechnik/multimaterialwelding/c/02.500.300/",
+            "category_img": "./img/MultiMaterial_Welding_.jpeg",
+            "parent_category": "Schweisstechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "bigHead® mit Gewindebolzen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik-zum-einbetten-und-aufkleben/bighead-mit-gewindebolzen/c/02.600.100/",
+            "category_img": "./img/bigHead__mit_Gewindebolzen.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "bigHead® mit Gewindebuchse",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik-zum-einbetten-und-aufkleben/bighead-mit-gewindebuchse/c/02.600.500/",
+            "category_img": "./img/bigHead__mit_Gewindebuchse.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "bigHead® mit Mutter",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik-zum-einbetten-und-aufkleben/bighead-mit-mutter/c/02.600.400/",
+            "category_img": "./img/bigHead__mit_Mutter.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "bigHead® mit Stift",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik-zum-einbetten-und-aufkleben/bighead-mit-stift/c/02.600.200/",
+            "category_img": "./img/bigHead__mit_Stift.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "bigHead® mit Nagel",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik-zum-einbetten-und-aufkleben/bighead-mit-nagel/c/02.600.300/",
+            "category_img": "./img/bigHead__mit_Nagel.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "bigHead® mit Kabelhalter",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik-zum-einbetten-und-aufkleben/bighead-mit-kabelhalter/c/02.600.800/",
+            "category_img": "./img/bigHead__mit_Kabelhalter.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "bigHead® mit Bogen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/verbindungstechnik-zum-einbetten-und-aufkleben/bighead-mit-bogen/c/02.600.700/",
+            "category_img": "./img/bigHead__mit_Bogen.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Zubehör für Verbindungselemente zum Einbetten und Aufkleben",
+            "category_link": "https://www.bossard.com/eshop/ch-de/zubehoer-fuer-verbindungselemente-zum-einbetten-und-aufkleben/c/02.600.900/",
+            "category_img": "./img/Zubeh_r_f_r_Verbindungselemente_zum_Einbetten_und_Aufkleben.jpeg",
+            "parent_category": "Verbindungstechnik zum Einbetten und Aufkleben"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Kabelverschraubungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/kabelverschraubungen/c/03.100.100/",
+            "category_img": "./img/Kabelverschraubungen.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Kontaktteile",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/kontaktteile/c/03.100.400/",
+            "category_img": "./img/Kontaktteile.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Kabelbinder",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/kabelbinder/c/03.100.300/",
+            "category_img": "./img/Kabelbinder.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Kabelbefestigungen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/kabelbefestigungen/c/03.100.700/",
+            "category_img": "./img/Kabelbefestigungen.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Industrielle Gehäusetechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/industrielle-gehaeusetechnik/c/03.100.600/",
+            "category_img": "./img/Industrielle_Geh_usetechnik.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Kabelschutz",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/kabelschutz/c/03.100.200/",
+            "category_img": "./img/Kabelschutz.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schrumpftechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/elektrotechnik/schrumpftechnik/c/03.100.800/",
+            "category_img": "./img/Schrumpftechnik.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Zubehör für die Elektrotechnik",
+            "category_link": "https://www.bossard.com/eshop/ch-de/funktionselemente/elektrotechnik/werkzeuge-und-zubehoer-fuer-die-elektrotechnik/c/03.100.900/",
+            "category_img": "./img/Werkzeuge_und_Zubeh_r_f_r_die_Elektrotechnik.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Ersatzteile für die Elektrotechnik Werkzeuge",
+            "category_link": "https://www.bossard.com/eshop/ch-de/funktionselemente/elektrotechnik/ersatzteile-fuer-die-elektrotechnik-werkzeuge/c/03.100.1000/",
+            "category_img": "./img/Ersatzteile_f_r_die_Elektrotechnik_Werkzeuge.jpeg",
+            "parent_category": "Elektrotechnik"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Bedien- und Kontrollelemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/zugangs-und-verbindungsloesungen-und-bedienelemente/bedien-und-kontrollelemente/c/03.200.100/",
+            "category_img": "./img/Bedien__und_Kontrollelemente.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Positionierungselemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/zugangs-und-verbindungsloesungen-und-bedienelemente/positionierungselemente/c/03.200.300/",
+            "category_img": "./img/Positionierungselemente.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Stellringe / Klemmringe",
+            "category_link": "https://www.bossard.com/eshop/ch-de/zugangs-und-verbindungsloesungen-und-bedienelemente/stellringe-klemmringe/c/03.200.400/",
+            "category_img": "./img/Stellringe___Klemmringe.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Toleranzausgleichende Elemente",
+            "category_link": "https://www.bossard.com/eshop/ch-de/zugangs-und-verbindungsloesungen-und-bedienelemente/toleranzausgleichende-elemente/c/03.200.500/",
+            "category_img": "./img/Toleranzausgleichende_Elemente.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Verschlüsse",
+            "category_link": "https://www.bossard.com/eshop/ch-de/funktionselemente/zugangs-und-verbindungsloesungen-und-bedienelemente/verschluesse/c/03.200.600/",
+            "category_img": "./img/Verschl_sse.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Schnellverschlüsse",
+            "category_link": "https://www.bossard.com/eshop/ch-de/zugangs-und-verbindungsloesungen-und-bedienelemente/schnellverschluesse/c/03.200.700/",
+            "category_img": "./img/Schnellverschl_sse.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Winkelgelenke / Gabelköpfe / Gelenkköpfe",
+            "category_link": "https://www.bossard.com/eshop/ch-de/winkelgelenke-gabelkoepfe-gelenkkoepfe/c/03.200.900/",
+            "category_img": "./img/Winkelgelenke___Gabelk_pfe___Gelenkk_pfe.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Zubehör für die Schnellverschlüsse",
+            "category_link": "https://www.bossard.com/eshop/ch-de/werkzeuge-und-zubehoer-fuer-die-schnellverschluesse/c/03.200.800/",
+            "category_img": "./img/Werkzeuge_und_Zubeh_r_f_r_die_Schnellverschl_sse.jpeg",
+            "parent_category": "Zugangs- und Verbindungslösungen und Bedienelemente"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Hydraulische Komponenten",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/fluessigkeitsmanagement/hydraulische-komponenten/c/03.300.200/",
+            "category_img": "./img/Hydraulische_Komponenten.jpeg",
+            "parent_category": "Flüssigkeitsmanagement"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Dichtstopfen",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/dichtungstechnologie/dichtstopfen/c/03.400.100/",
+            "category_img": "./img/Dichtstopfen.jpeg",
+            "parent_category": "Dichtungstechnologie"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Durchflusssteuerung",
+            "category_link": "https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/dichtungstechnologie/durchflusssteuerung/c/03.400.200/",
+            "category_img": "./img/Durchflusssteuerung.jpeg",
+            "parent_category": "Dichtungstechnologie"
+        },
+        {
+            "category_type": "subcategory",
+            "category_name": "Werkzeuge und Ausrüstung für die Dichtungstechnologie",
+            "category_link": "https://www.bossard.com/eshop/ch-de/dichtungstechnologie/werkzeuge-und-ausruestung-fuer-die-dichtungstechnologie/c/03.400.400/",
+            "category_img": "./img/Werkzeuge_und_Ausr_stung_f_r_die_Dichtungstechnologie.jpeg",
+            "parent_category": "Dichtungstechnologie"
+        }
+    ]
+}

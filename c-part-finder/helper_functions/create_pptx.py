@@ -71,7 +71,10 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
     for idx, (coords, category_name, subcategory_name, url) in enumerate(annotations):
         # Unpack coordinates
         left, top, right, bottom = coords
-        part_info = json_handler.extract_category_details(json_path, category_name, subcategory_name)
+        # part_info = json_handler.extract_category_details(json_path, category_name, subcategory_name)
+        # path_image = part_info[3]
+        # img_part = Image.open(path_image)
+
         # Scale coordinates to match PowerPoint dimensions
         left_scaled = left * scale_x + image_left
         top_scaled = top * scale_y + image_top
@@ -103,6 +106,12 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
         text_frame.text = subcategory_name
         text_frame.paragraphs[0].font.size = Pt(12)  # Use Pt for font size
         text_frame.paragraphs[0].font.bold = True
+
+        # Add hyperlink to the label
+
+        # Add Image below the label
+
+
 
     # Save the PowerPoint presentation
     prs.save(output_path)

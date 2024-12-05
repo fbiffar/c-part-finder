@@ -1,9 +1,7 @@
-import requests
-from bs4 import BeautifulSoup
-import json
-import time
-from urllib.parse import urljoin
+import os
 import logging
+from urllib.parse import urljoin, urlparse
+from playwright.sync_api import sync_playwright
 
 # Set up logging
 logging.basicConfig(
@@ -15,96 +13,115 @@ logger = logging.getLogger(__name__)
 class BossardScraper:
     def __init__(self):
         self.base_url = "https://www.bossard.com/eshop/ch-de/"
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'de,en-US;q=0.7,en;q=0.3',
-        })
         self.visited_urls = set()
+        self.playwright = None
+        self.browser = None
+        self.context = None
+        self.img_dir = './img/'
+        self.links_file = './links/links.txt'
 
-    def initialize_session(self):
-        """Initialize session and get necessary cookies"""
-        try:
-            response = self.session.get(self.base_url)
-            response.raise_for_status()
-            logger.info("Session initialized successfully")
-            return True
-        except requests.RequestException as e:
-            logger.error(f"Failed to initialize session: {e}")
-            return False
+    def initialize(self):
+        """Initialize Playwright browser"""
+        self.playwright = sync_playwright().start()
+        self.browser = self.playwright.chromium.launch(headless=True)
+        self.context = self.browser.new_context(
+            viewport={'width': 1920, 'height': 1080},
+            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        )
+        logger.info("Playwright initialized successfully")
 
     def get_page_content(self, url):
-        """Fetch page content with retry mechanism"""
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                response = self.session.get(url)
-                response.raise_for_status()
-                time.sleep(1)  # Rate limiting
-                return response.text
-            except requests.RequestException as e:
-                logger.warning(f"Attempt {attempt + 1} failed for URL {url}: {e}")
-                if attempt == max_retries - 1:
-                    logger.error(f"Failed to fetch {url} after {max_retries} attempts")
-                    return None
-                time.sleep(2 ** attempt)  # Exponential backoff
-        return None
+        """Load page and wait for dynamic content"""
+        try:
+            page = self.context.new_page()
+            page.goto(url, wait_until='networkidle')
+            return page
+        except Exception as e:
+            logger.error(f"Error loading page {url}: {e}")
+            return None
 
-    def parse_category_page(self, url):
-        """Parse a category page and extract subcategories"""
-        if url in self.visited_urls:
-            return {}
-        
-        self.visited_urls.add(url)
-        logger.info(f"Parsing category page: {url}")
-        
-        content = self.get_page_content(url)
-        print(content)
-        if not content:
-            return {}
+    def scrape_media_images(self, page):
+        """Scrape all media images from the page and save them locally"""
+        if not os.path.exists(self.img_dir):
+            os.makedirs(self.img_dir)
 
-        soup = BeautifulSoup(content, 'html.parser')
-        categories = {}
+        image_elements = page.query_selector_all('img')  # Adjust selector if needed
 
-        # Look for category elements (adjust selectors based on actual HTML structure)
-        category_elements = soup.select('.category-element')  # Replace with actual selector
-        
-        for element in category_elements:
-            category_name = element.get_text(strip=True)
-            category_url = urljoin(self.base_url, element.get('href', ''))
-            
-            if category_url and category_url not in self.visited_urls:
-                subcategories = self.parse_category_page(category_url)
-                categories[category_name] = subcategories
+        for img in image_elements:
+            img_url = img.get_attribute('src')
+            if img_url and 'medias' in img_url:  # Filter for media images
+                self.download_image(img_url)
 
-        return categories
+    def download_image(self, img_url):
+        """Download an image from a URL and save it to the img directory"""
+        try:
+            img_url = urljoin(self.base_url, img_url)
+            img_name = os.path.basename(urlparse(img_url).path)
+            img_path = os.path.join(self.img_dir, img_name)
+
+            # Use Playwright to download the image
+            page = self.context.new_page()
+            response = page.goto(img_url)
+            if response.ok:
+                with open(img_path, 'wb') as f:
+                    f.write(response.body())
+                logger.info(f"Downloaded image: {img_name}")
+            else:
+                logger.error(f"Failed to download image {img_url}: HTTP {response.status}")
+
+            page.close()
+
+        except Exception as e:
+            logger.error(f"Failed to download image {img_url}: {e}")
+
+    def scrape_links(self, page):
+        """Scrape all links from the page and save them to a file"""
+        if not os.path.exists(os.path.dirname(self.links_file)):
+            os.makedirs(os.path.dirname(self.links_file))
+
+        link_elements = page.query_selector_all('a')
+        with open(self.links_file, 'w', encoding='utf-8') as f:
+            for link in link_elements:
+                href = link.get_attribute('href')
+                if href:
+                    full_url = urljoin(self.base_url, href)
+                    f.write(full_url + '\n')
+                    logger.info(f"Found link: {full_url}")
 
     def scrape(self):
         """Main scraping method"""
-        if not self.initialize_session():
-            logger.error("Failed to initialize session. Exiting...")
-            return None
-
-        logger.info("Starting scraping process...")
-        categories = self.parse_category_page(self.base_url)
-
-        # Save results to JSON file
         try:
-            with open('bossard_categories.json', 'w', encoding='utf-8') as f:
-                json.dump(categories, f, ensure_ascii=False, indent=4)
-            logger.info("Categories saved to bossard_categories.json")
-        except IOError as e:
-            logger.error(f"Failed to save categories to file: {e}")
+            self.initialize()
+            logger.info("Starting scraping process...")
+            
+            page = self.get_page_content(self.base_url)
+            if not page:
+                return None
+            
+            self.scrape_media_images(page)
+            self.scrape_links(page)
+            page.close()
 
-        return categories
+            logger.info("Scraping completed successfully!")
+
+        except Exception as e:
+            logger.error(f"Scraping failed: {e}")
+
+        finally:
+            self.cleanup()
+
+    def cleanup(self):
+        """Cleanup Playwright resources"""
+        if self.context:
+            self.context.close()
+        if self.browser:
+            self.browser.close()
+        if self.playwright:
+            self.playwright.stop()
 
 def main():
     scraper = BossardScraper()
-    categories = scraper.scrape()
-    if categories:
-        print("Scraping completed successfully!")
-        print(f"Total categories visited: {len(scraper.visited_urls)}")
+    scraper.scrape()
 
 if __name__ == "__main__":
     main()

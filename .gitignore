@@ -1,2 +1,5 @@
 /venv
 /c-part-finder/.env
+/c-part-finder/images
+annotations.csv
+annotated_presentation.pptx

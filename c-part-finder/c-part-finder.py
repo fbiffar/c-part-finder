@@ -151,8 +151,8 @@ def save_annotations_to_csv(file_path, annotations):
     with open(file_path, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(["Part ID", "Component", "URL", "ROI Coordinates"])
-        for idx, (roi_coords, part_name, url) in enumerate(annotations):
-            writer.writerow([idx + 1, part_name, url, roi_coords])
+        for idx, (roi_coords, category_part_name,subcategory_part_name, url) in enumerate(annotations):
+            writer.writerow([idx + 1, category_part_name, subcategory_part_name, url, roi_coords])
 
 # Function to perform semantic search
 def semantic_search(query_embedding, embeddings, top_n=3):
@@ -276,7 +276,7 @@ def handle_identification(category_name, subcategory_name, json_path, certainty,
         url = part_info[2]
     elif identification_mode == "embedding":
         unique_id = category_name
-        part_info = df_handler.extract_category_details(csv_filepath = "unique_id_embeddings.csv",unique_id=unique_id)
+        part_info = df_handler.extract_category_details(csv_filepath = "context/unique_id_embeddings.csv",unique_id=unique_id)
         print(f"===================\nPart Link: {part_info['category_link']}")
         url = part_info["category_link"]
     else: 
@@ -348,11 +348,11 @@ def main():
                     use_embedding = True
                     if use_embedding:
                         category_context = ""
-                        with open("./context_categories.txt", 'r', encoding='utf-8') as file:
+                        with open("./context/context_categories.txt", 'r', encoding='utf-8') as file:
                             category_context = file.read()
                         category_context="Schrauben, Scharniere, Dichtscheiben, Muttern, Rollen, Kabelbinder, Kugelbolzen, Handräder"
                         embedding = get_part_description(encoded_roi, api_key, context_partnames=category_context)
-                        df = pd.read_csv('unique_id_embeddings.csv')
+                        df = pd.read_csv('context/unique_id_embeddings.csv')
                         unique_ids = df['unique_id'].tolist()
                         names = df['name'].tolist()
                         urls = df["category_link"].tolist()
@@ -440,7 +440,7 @@ def main():
             print(st.session_state.annotate)
             create_pptx_with_annotations(img, st.session_state.annotate, output_path="annotated_presentation.pptx")
             output_path = "annotations.csv"
-            save_annotations_to_csv(output_path, st.session_state.annotations)
+            save_annotations_to_csv(output_path, st.session_state.annotate)
             st.success(f"Annotations saved to {output_path}")
 
 if __name__ == "__main__":

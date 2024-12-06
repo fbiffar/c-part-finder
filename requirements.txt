@@ -6,3 +6,6 @@ Pillow
 python-pptx
 opencv-python-headless
 setuptools
+pandas==2.2.3
+python-dotenv==1.0.1
+Requests==2.32.3

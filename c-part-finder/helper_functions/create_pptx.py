@@ -85,7 +85,7 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
         label_spacing = (free_space_height - start_top) / len(annotations)
 
         for coords, category_name, subcategory_name, url in annotations:
-            part_info = df_handler.extract_category_details("unique_id_embeddings.csv",category_name)
+            part_info = df_handler.extract_category_details("context/unique_id_embeddings.csv",category_name)
         
             path_image = None
             if part_info:
@@ -171,8 +171,9 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
     add_label_and_arrow("right", Inches(1.0), label_positions["right"])
 
     # Save the PowerPoint presentation
-    prs.save(output_path)
-    print(f"PowerPoint saved to {output_path}")
+    return prs
+    # prs.save(output_path)
+    # print(f"PowerPoint saved to {output_path}")
 
 
 

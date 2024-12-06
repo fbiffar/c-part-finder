@@ -19,6 +19,7 @@ import os
 from helper_functions.create_pptx import *
 from helper_functions import json_handler
 from helper_functions import df_handler
+import io
 
 load_dotenv()
 # Initialize OpenAI API key
@@ -146,13 +147,12 @@ def search_bossard(component_name):
         print(f"Error searching for '{component_name}': {e}")
         return "Not available"
     
-def save_annotations_to_csv(file_path, annotations):
-    """Save annotations to a CSV file."""
-    with open(file_path, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Part ID", "Component", "URL", "ROI Coordinates"])
-        for idx, (roi_coords, category_part_name,subcategory_part_name, url) in enumerate(annotations):
-            writer.writerow([idx + 1, category_part_name, subcategory_part_name, url, roi_coords])
+def convert_to_csv(annotate):
+  # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    df = pd.DataFrame(annotate, columns=["ROI Coordinates", "Part ID", "Category", "URL"])
+
+    return df.to_csv().encode('utf-8')
+
 
 # Function to perform semantic search
 def semantic_search(query_embedding, embeddings, top_n=3):
@@ -435,13 +435,28 @@ def main():
         if st.session_state.annotations:
             display_annotations(st.session_state.annotations)
 
-        # Step 7: Save Results
-        if st.button("Save Annotated Image with Links"):
-            print(st.session_state.annotate)
-            create_pptx_with_annotations(img, st.session_state.annotate, output_path="annotated_presentation.pptx")
-            output_path = "annotations.csv"
-            save_annotations_to_csv(output_path, st.session_state.annotate)
-            st.success(f"Annotations saved to {output_path}")
+        # # Step 7: Save Results
+        # if st.button("Save Annotated Image with Links"):
+           
+           
+        col1, col2 = st.columns(2)
+        with col1: 
+            prs = create_pptx_with_annotations(img, st.session_state.annotate, output_path="annotated_presentation.pptx")
+            # save the output into binary form
+            binary_output = io.BytesIO()
+            prs.save(binary_output) 
+            st.download_button(label = 'Download PowerPoint',
+                            data = binary_output.getvalue(),
+                            file_name = 'machine_part.pptx')
+        with col2:
+            # Use Streamlit's download button
+            st.download_button(
+            label="Download data as CSV",
+            data=convert_to_csv(st.session_state.annotate),
+            file_name='machine_part.csv',
+            mime='text/csv',
+)
+
 
 if __name__ == "__main__":
     main()

@@ -149,8 +149,8 @@ def annotate_part(image, roi_coords, part_name):
         text_y = top + text_height + 10  # Move text below the rectangle if it overflows
 
     # # Draw the white background for the text
-    # cv2.rectangle(annotated, (text_x, text_y - text_height - 5),
-    #               (text_x + text_width, text_y + 5), white, -1)  # White background
+    cv2.rectangle(annotated, (text_x, text_y - text_height - 5),
+                  (text_x + text_width, text_y + 5), white, -1)  # White background
 
     # Add the black text
     cv2.putText(annotated, part_name, (text_x, text_y), font, font_scale, white, thickness)

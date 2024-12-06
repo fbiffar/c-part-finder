@@ -6,6 +6,7 @@ from PIL import Image
 import numpy as np
 import io
 from helper_functions.json_handler import *
+import helper_functions.df_handler as df_handler
 
 from pptx.oxml.ns import qn
 from pptx.oxml import parse_xml
@@ -84,10 +85,11 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
         label_spacing = (free_space_height - start_top) / len(annotations)
 
         for coords, category_name, subcategory_name, url in annotations:
-            # Extract part details from JSON
-            part_info = extract_category_details(json_path, category_name, subcategory_name)
+            part_info = df_handler.extract_category_details("unique_id_embeddings.csv",category_name)
+        
+            path_image = None
             if part_info:
-                path_image = part_info[3]
+                path_image = part_info["category_img"]
                 img_part = Image.open(path_image)
 
             # Prepare label and calculate its position

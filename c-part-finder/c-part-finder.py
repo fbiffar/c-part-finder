@@ -119,19 +119,42 @@ def select_roi(image):
 def annotate_part(image, roi_coords, part_name):
     """Annotate the image with a green rectangle and part name."""
     annotated = image.copy()
+    img_height, img_width = annotated.shape[:2]  # Get the image dimensions
     left, top, right, bottom = roi_coords
-    cv2.rectangle(annotated, (left, top), (right, bottom), (0, 255, 0), 2)  # Green rectangle
-    
+
+    green = (0, 255, 0)
+    white = (255, 255, 255)
+    black = (0, 0, 0)
+
+    # Draw the green rectangle
+    cv2.rectangle(annotated, (left, top), (right, bottom), green, 2)  # Green rectangle
+
     # Add label
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = 1.0
-    thickness = 2
+    font_scale = 0.5
+    thickness = 1
     text_size = cv2.getTextSize(part_name, font, font_scale, thickness)[0]
+    text_width, text_height = text_size
+
+    # Calculate text position
     text_x = left
-    text_y = max(top - 10, text_size[1] + 5)  # Prevent text from being outside the image
-    cv2.rectangle(annotated, (text_x, text_y - text_size[1] - 5),
-                  (text_x + text_size[0], text_y + 5), (255, 255, 255), -1)  # White background
-    cv2.putText(annotated, part_name, (text_x, text_y), font, font_scale, (0, 0, 0), thickness)
+    text_y = top - 10  # Position text above the rectangle
+
+    # Ensure text stays within the image width
+    if text_x + text_width > img_width:
+        text_x = img_width - text_width - 5  # Shift text to the left if it overflows
+
+    # Ensure text stays within the image height
+    if text_y - text_height - 5 < 0:
+        text_y = top + text_height + 10  # Move text below the rectangle if it overflows
+
+    # # Draw the white background for the text
+    # cv2.rectangle(annotated, (text_x, text_y - text_height - 5),
+    #               (text_x + text_width, text_y + 5), white, -1)  # White background
+
+    # Add the black text
+    cv2.putText(annotated, part_name, (text_x, text_y), font, font_scale, white, thickness)
+
     return annotated
 
 def search_bossard(component_name):

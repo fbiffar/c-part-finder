@@ -2,7 +2,7 @@ import json
 import pandas as pd
 
 # Load the JSON data
-with open('augmented_categories.json', 'r') as file:
+with open('augmented_categories.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
 # Function to recursively extract unique_id and embedding
@@ -12,7 +12,8 @@ def extract_data(subcategories):
         if 'unique_id' in sub_item and 'embedding' in sub_item:
             unique_id = sub_item['unique_id']
             embedding = sub_item['embedding']
-            extracted.append({'unique_id': unique_id, 'embedding': embedding})
+            name = sub_item["category_name"]
+            extracted.append({'unique_id': unique_id, 'name': name, 'embedding': embedding})
             # Remove the embedding from the original JSON
             del sub_item['embedding']
         # Check for further nested subcategories
@@ -22,10 +23,13 @@ def extract_data(subcategories):
 
 def recursive_items(item, extracted_data):
 
-    print(item['unique_id'])
+    print(item['category_name'])
     unique_id = item['unique_id']
     embedding = item['embedding']
-    extracted_data.append({'unique_id': unique_id, 'embedding': embedding})
+    name = item["category_name"]
+    url = item["category_link"]
+    img = item["category_img"]
+    extracted_data.append({'unique_id': unique_id, 'name': name, 'category_link': url, "category_img": img, 'embedding': embedding})
     for item in item["subcategories"]:
         extracted_data = recursive_items(item, extracted_data)
         
@@ -43,7 +47,7 @@ df = pd.DataFrame(extracted_data)
 
 df = df.sort_values(by="unique_id")
 # Save the DataFrame to a CSV file
-df.to_csv('unique_id_embeddings.csv', index=False)
+df.to_csv('unique_id_embeddings.csv', index=False, encoding='utf-8')
 
 # Save the modified JSON back to a file
 with open('modified_augmented_categories.json', 'w') as file:

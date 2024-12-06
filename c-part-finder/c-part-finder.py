@@ -14,9 +14,20 @@ from streamlit_drawable_canvas import st_canvas
 from googlesearch import search
 from pydantic import BaseModel
 from openai import OpenAI
+from sklearn.metrics.pairwise import cosine_similarity
 import os
 from helper_functions.create_pptx import *
 from helper_functions import json_handler
+from helper_functions import df_handler
+
+load_dotenv()
+# Initialize OpenAI API key
+api_key = os.getenv("OPENAI_API_KEY")
+# Initialize OpenAI API key
+api_key = os.getenv("OPENAI_API_KEY")
+
+
+client = OpenAI(api_key=api_key)
 
 # Pydantic model for OpenAI API response
 class MachinePartIdentifier(BaseModel):
@@ -143,6 +154,63 @@ def save_annotations_to_csv(file_path, annotations):
         for idx, (roi_coords, part_name, url) in enumerate(annotations):
             writer.writerow([idx + 1, part_name, url, roi_coords])
 
+# Function to perform semantic search
+def semantic_search(query_embedding, embeddings, top_n=3):
+    # Compute cosine similarity between the query and all embeddings
+    similarities = cosine_similarity([query_embedding], embeddings)
+    # Get the indices of the top_n most similar embeddings
+    top_indices = np.argsort(similarities[0])[-top_n:][::-1]
+    print(f"Top indices: {top_indices}")
+    top_similarities = similarities[0][top_indices]           
+    return top_indices, top_similarities
+
+def get_embedding(text, model="text-embedding-3-large"):
+   text = text.replace("\n", " ")
+   return client.embeddings.create(input = [text], model=model).data[0].embedding
+
+def get_part_description(encoded_image,api_key, context_partnames=""):
+
+    # Step 1: Generate a description using OpenAI's language model
+    prompt = (
+        "Analyze the provided image of a machine part and generate a two-sentence description "
+        "of the visible parts and what they could represent."
+        f"The Following list contains the names of what the part could represent: {context_partnames} "
+    )
+    
+    client = OpenAI(api_key=api_key)
+    # Use the OpenAI API to generate the description
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": prompt
+            },
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/png;base64,{encoded_image}"
+                        }
+                    }
+                ]
+            }
+        ]
+    )
+    print(f"Description: {response}")
+    description = response.choices[0].message.content
+
+    # Step 2: Embed the description
+    # Assuming you have a function or model to embed text, e.g., using OpenAI's embedding API
+    embedding_response = get_embedding(description)
+    
+    # Extract the embedding
+    #embedded_description = embedding_response['data'][0]['embedding']
+
+    return embedding_response
+
 def send_to_openai_api(encoded_image, api_endpoint, api_key, pairs):
     client = OpenAI(api_key=api_key)
 
@@ -206,6 +274,11 @@ def handle_identification(category_name, subcategory_name, json_path, certainty,
     if identification_mode == "auto":
         part_info = json_handler.extract_category_details(json_path, category_name, subcategory_name)
         url = part_info[2]
+    elif identification_mode == "embedding":
+        unique_id = category_name
+        part_info = df_handler.extract_category_details(csv_filepath = "unique_id_embeddings.csv",unique_id=unique_id)
+        print(f"===================\nPart Link: {part_info['category_link']}")
+        url = part_info["category_link"]
     else: 
         url = search_bossard(subcategory_name)
     # Generate preview with annotation
@@ -269,15 +342,43 @@ def main():
             # Auto Identify
             with col1:
                 if st.button("Auto Identify Part"):
+                    print(f"ROI Size: {roi.shape}")
                     encoded_roi = encode_image_to_base64(roi)
-                    response = send_to_openai_api(encoded_roi, api_endpoint, api_key, pairs)
 
-                    if response and response.choices:
-                        parsed_data = response.choices[0].message.parsed
-                        part_category_name = parsed_data.category_name
-                        part_subcategory_name = parsed_data.subcategory_name
-                        certainty = parsed_data.certainty
-                        identification_mode = "auto"
+                    use_embedding = True
+                    if use_embedding:
+                        category_context = ""
+                        with open("./context_categories.txt", 'r', encoding='utf-8') as file:
+                            category_context = file.read()
+                        category_context="Schrauben, Scharniere, Dichtscheiben, Muttern, Rollen, Kabelbinder, Kugelbolzen, Handräder"
+                        embedding = get_part_description(encoded_roi, api_key, context_partnames=category_context)
+                        df = pd.read_csv('unique_id_embeddings.csv')
+                        unique_ids = df['unique_id'].tolist()
+                        names = df['name'].tolist()
+                        urls = df["category_link"].tolist()
+                        imgs = df["category_img"].tolist()
+                        embeddings = df['embedding'].apply(eval).tolist()  # Assuming embeddings are stored as strings
+                        # Find the 3 most relevant embeddings
+                        top_indices, top_similarities = semantic_search(embedding, embeddings)
+                        top_unique_ids = [unique_ids[i] for i in top_indices]
+                        top_unique_names = [names[i] for i in top_indices]
+                        print("Top 3 most relevant unique IDs:", top_unique_ids)
+                        print("Top 3 most relevant names:",top_unique_names)
+                        print("Top 3 similarity values:", top_similarities)
+                        part_category_name = top_unique_ids[0]                       
+                        part_subcategory_name = names[part_category_name]
+                        certainty = top_similarities[0]
+                        identification_mode = "embedding"
+                    else:
+
+                        response = send_to_openai_api(encoded_roi, api_endpoint, api_key, pairs)
+                    
+                        if response and response.choices:
+                            parsed_data = response.choices[0].message.parsed
+                            part_category_name = parsed_data.category_name
+                            part_subcategory_name = parsed_data.subcategory_name
+                            certainty = parsed_data.certainty
+                            identification_mode = "auto"
 
             # Manual Identify
             with col2:

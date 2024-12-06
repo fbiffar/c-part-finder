@@ -18,14 +18,6 @@ def get_embedding(text, model="text-embedding-3-large"):
    return client.embeddings.create(input = [text], model=model).data[0].embedding
 
 
-# Function to generate embeddings using OpenAI API
-def generate_embedding(text):
-    response = openai.Embedding.create(
-        model="text-embedding-3-large",
-        input=text
-    )
-    return response['data'][0]['embedding']
-
 # Read the original JSON file
 with open('restructured_categories.json', 'r', encoding='utf-8') as file:
     data = json.load(file)

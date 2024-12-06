@@ -10,22 +10,6 @@ from helper_functions.json_handler import *
 from pptx.oxml.ns import qn
 from pptx.oxml import parse_xml
 
-def add_hyperlink(run, url):
-    """
-    Add a hyperlink to a run of text in a PowerPoint slide.
-
-    Args:
-    - run: The text run to which the hyperlink will be added.
-    - url: The URL for the hyperlink.
-    """
-    # Create a relationship for the hyperlink
-    rId = run.part.relate_to(url, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", is_external=True)
-
-    # Add the hyperlink XML element
-    rPr = run._r.get_or_add_rPr()  # Get or create the run properties
-    hyperlink_xml = f'<a:hlinkClick xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" r:id="{rId}"/>'
-    rPr.append(parse_xml(hyperlink_xml))
-
 
 def create_pptx_with_annotations(img, annotations, output_path="annotated_presentation.pptx"):
     """
@@ -58,117 +42,136 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
     image_aspect_ratio = img_height / img_width
     image_height_on_slide = image_width_on_slide * image_aspect_ratio
 
-    # Center the image on the slide
+    # Center the image on the slide and add a black frame
     image_left = (slide_width - image_width_on_slide) / 2  # Center horizontally
     image_top = (slide_height - image_height_on_slide) / 2  # Center vertically
-    slide.shapes.add_picture(img_bytes, image_left, image_top, width=image_width_on_slide, height=image_height_on_slide)
+    image_shape = slide.shapes.add_picture(
+        img_bytes, image_left, image_top, width=image_width_on_slide, height=image_height_on_slide
+    )
+    image_shape.line.color.rgb = RGBColor(0, 0, 0)  # Black border
+    image_shape.line.width = Pt(3)  # Thickness of the border
 
     # Calculate scaling factors for annotation placement
     scale_x = image_width_on_slide / img_width
     scale_y = image_height_on_slide / img_height
 
-    # Define starting positions for labels and images
-    current_label_top_left = Inches(0.5)  # Start for left-side annotations
-    current_label_top_right = Inches(0.5)  # Start for right-side annotations
-    free_space_width = Inches(2.0)  # Fixed width for labels and images
+    # Free space dimensions for labels and images
+    free_space_width = Inches(1.8)  # Fixed width for labels and images
+    free_space_height = slide_height - Inches(1.5)  # Vertical space for labels
 
-    # Calculate horizontal positions for left and right labels
-    free_space_left = image_left - free_space_width - Inches(0.5)  # Margin for left-side labels
-    free_space_right = image_left + image_width_on_slide + Inches(0.5)  # Margin for right-side labels
+    # Sort annotations by horizontal center of their marked region
+    sorted_annotations = sorted(
+        annotations,
+        key=lambda ann: ((ann[0][0] + ann[0][2]) / 2) * scale_x + image_left
+    )
 
-    # Add annotations
-    for idx, (coords, category_name, subcategory_name, url) in enumerate(annotations):
-        # Unpack coordinates
-        left, top, right, bottom = coords
-        part_info = extract_category_details(json_path, category_name, subcategory_name)
-        path_image = None
-        if part_info:
-            path_image = part_info[3]
+    # Split sorted annotations into left and right groups
+    mid_index = len(sorted_annotations) // 2
+    left_annotations = sorted_annotations[:mid_index]
+    right_annotations = sorted_annotations[mid_index:]
 
-        # Scale coordinates to match PowerPoint dimensions
-        left_scaled = left * scale_x + image_left
-        top_scaled = top * scale_y + image_top
-        right_scaled = right * scale_x + image_left
-        bottom_scaled = bottom * scale_y + image_top
+    # Assign labels dynamically based on their sorted positions
+    label_positions = {"left": left_annotations, "right": right_annotations}
 
-        # Calculate center of the marked region for the arrow
-        marked_center_x = (left_scaled + right_scaled) / 2
-        marked_center_y = (top_scaled + bottom_scaled) / 2
+    print(label_positions)
 
-        # Draw the box around the part
-        shape = slide.shapes.add_shape(
-            MSO_SHAPE.RECTANGLE, left_scaled, top_scaled,
-            right_scaled - left_scaled, bottom_scaled - top_scaled
-        )
-        shape.line.color.rgb = RGBColor(255, 0, 0)  # Red border
-        shape.fill.background()  # Transparent fill
+    # Helper to add labels and arrows
+    def add_label_and_arrow(side, start_top, annotations):
+        if not annotations:
+            return  # Skip if no annotations for this side
 
-        # Determine label placement: left or right side
-        if idx % 2 == 0:  # Even index: Right side
-            label_left = free_space_right
-            current_label_top = current_label_top_right
-            current_label_top_right += Inches(2.0)  # Increment position for next annotation
-        else:  # Odd index: Left side
-            label_left = free_space_left
-            current_label_top = current_label_top_left
-            current_label_top_left += Inches(2.0)  # Increment position for next annotation
+        current_top = start_top
+        label_spacing = (free_space_height - start_top) / len(annotations)
 
-        label_height = Inches(0.5)  # Fixed height for labels
-        image_spacing = Inches(0.2)  # Space between label and image
+        for coords, category_name, subcategory_name, url in annotations:
+            # Extract part details from JSON
+            part_info = extract_category_details(json_path, category_name, subcategory_name)
+            if part_info:
+                path_image = part_info[3]
+                img_part = Image.open(path_image)
 
-        # Add label textbox
-        label = slide.shapes.add_textbox(label_left, current_label_top, free_space_width, label_height)
-        text_frame = label.text_frame
-        p = text_frame.add_paragraph()
-        run = p.add_run()
-        run.text = subcategory_name
-        run.font.size = Pt(12)  # Use Pt for font size
-        run.font.bold = True
-
-        # Add hyperlink to the label
-        # if url:
-        #     add_hyperlink(run, url)
-
-        # Add subcategory image below the label
-        image_bottom_y = current_label_top + label_height + image_spacing
-        if path_image:
-            img_part = Image.open(path_image)
-            img_bytes_part = io.BytesIO()
-            img_part.save(img_bytes_part, format="PNG")
-            img_bytes_part.seek(0)
-
-            # Calculate the size for the small image
-            part_image_width = Inches(1.5)
-            part_aspect_ratio = img_part.height / img_part.width
-            part_image_height = part_image_width * part_aspect_ratio
-
-            slide.shapes.add_picture(
-                img_bytes_part,
-                label_left,
-                image_bottom_y,  # Position below the label
-                width=part_image_width,
-                height=part_image_height
+            # Prepare label and calculate its position
+            label_left = (
+                image_left + image_width_on_slide + Inches(0.2)
+                if side == "right"
+                else image_left - free_space_width - Inches(0.2)
             )
+            label_center_x = label_left + free_space_width / 2
+            label_height = Inches(0.7)  # Allow for 2 lines of text
+            label_top = current_top
+            label = slide.shapes.add_textbox(label_left, label_top, free_space_width, label_height)
+            text_frame = label.text_frame
+            text_frame.word_wrap = True
+            p = text_frame.add_paragraph()
+            p.text = f"{subcategory_name}"
+            p.font.size = Pt(12)
+            p.font.bold = True
+            text_frame.paragraphs[0].alignment = 1  # Center alignment
 
-            # Adjust for image height
-            if idx % 2 == 0:
-                current_label_top_right = image_bottom_y + part_image_height + Inches(0.5)
-            else:
-                current_label_top_left = image_bottom_y + part_image_height + Inches(0.5)
+            # Adjust arrow direction dynamically
+            left, top, right, bottom = coords
+            left_scaled = left * scale_x + image_left
+            right_scaled = right * scale_x + image_left
+            top_scaled = top * scale_y + image_top
+            bottom_scaled = bottom * scale_y + image_top
+            region_center_y = (top_scaled + bottom_scaled) / 2
+            arrow_start_x = right_scaled if side == "right" else left_scaled
+            arrow_start_y = region_center_y
+            arrow_end_x = label_left if side == "right" else label_left + free_space_width
+            arrow_end_y = label_top + label_height 
 
-        # Add connecting arrow/line from the marked region to the label
-        arrow = slide.shapes.add_connector(
-            MSO_CONNECTOR.STRAIGHT,
-            marked_center_x,
-            marked_center_y,
-            label_left + free_space_width / 2,  # Center of the label box
-            current_label_top + label_height / 2  # Adjust to point at the center of the label
-        )
-        arrow.line.color.rgb = RGBColor(0, 0, 255)  # Blue arrow
+            # Add arrow
+            arrow = slide.shapes.add_connector(
+                MSO_CONNECTOR.STRAIGHT,
+                arrow_start_x,
+                arrow_start_y,
+                arrow_end_x,
+                arrow_end_y,
+            )
+            arrow.line.color.rgb = RGBColor(0, 0, 255)  # Blue arrow
+
+            # Draw the box around the part
+            shape = slide.shapes.add_shape(
+                MSO_SHAPE.RECTANGLE, left_scaled, top_scaled,
+                right_scaled - left_scaled, bottom_scaled - top_scaled
+            )
+            shape.line.color.rgb = RGBColor(255, 0, 0)  # Red border
+            shape.line.width = Pt(3)  # Thickness of the border
+
+            shape.fill.background()  # Transparent fill
+
+             # Add the subcategory image below the label
+            if path_image:
+                img_part = Image.open(path_image)
+                img_bytes_part = io.BytesIO()
+                img_part.save(img_bytes_part, format="PNG")
+                img_bytes_part.seek(0)
+            
+                # Calculate the size for the small image
+                part_image_width = Inches(1.5)
+                part_aspect_ratio = img_part.height / img_part.width
+                part_image_height = part_image_width * part_aspect_ratio
+
+                img_shape = slide.shapes.add_picture(
+                    img_bytes_part,
+                    label_left,
+                    label_top + label_height + Inches(0.1),  # Position below the label
+                    width=part_image_width,
+                    height=part_image_height
+                )
+                img_shape.line.color.rgb = RGBColor(0, 0, 0)  # Black border
+                img_shape.line.width = Pt(3)  # Thickness of the border
+            # Increment top position for the next label
+            current_top += label_spacing
+
+    # Add left and right labels and arrows
+    add_label_and_arrow("left", Inches(1.0), label_positions["left"])
+    add_label_and_arrow("right", Inches(1.0), label_positions["right"])
 
     # Save the PowerPoint presentation
     prs.save(output_path)
     print(f"PowerPoint saved to {output_path}")
+
 
 
 # annotation = [((112, 215, 187, 301), 'Flüssigkeitsmanagement', 'Hydraulische Komponenten', 'https://www.bossard.com/eshop/ch-de/produkte/funktionselemente/fluessigkeitsmanagement/hydraulische-komponenten/c/03.300.200/'), ((196, 38, 251, 86), 'Norm- und Standard Verbindungselemente', 'Schrauben', 'https://www.bossard.com/eshop/ch-de/produkte/verbindungstechnik/norm-und-standard-verbindungselemente/schrauben/c/01.100.100/')]

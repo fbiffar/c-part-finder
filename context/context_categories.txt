@@ -178,6 +178,8 @@ Indexierelemente
 Nivellierelemente  
 Handräder  
 Klemmhebel  
+Hebel
+Griffe
 Scharniere  
 Gasdruckfedern  
 Teleskop  

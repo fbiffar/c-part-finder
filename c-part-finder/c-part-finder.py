@@ -153,7 +153,7 @@ def annotate_part(image, roi_coords, part_name):
                   (text_x + text_width, text_y + 5), white, -1)  # White background
 
     # Add the black text
-    cv2.putText(annotated, part_name, (text_x, text_y), font, font_scale, white, thickness)
+    cv2.putText(annotated, part_name, (text_x, text_y), font, font_scale, black, thickness)
 
     return annotated
 
@@ -195,9 +195,8 @@ def get_part_description(encoded_image,api_key, context_partnames=""):
 
     # Step 1: Generate a description using OpenAI's language model
     prompt = (
-        "Analyze the provided image of a machine part and generate a two-sentence description "
-        "of the visible parts and what they could represent."
-        f"The Following list contains the names of what the part could represent: {context_partnames} "
+        """Analyze the provided image of a machine part and generate a two-sentence description "
+        "of the visible parts in the marked area and what their function is and what they could be in the context of the surrounding machine or product. """
     )
     
     client = OpenAI(api_key=api_key)

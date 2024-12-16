@@ -21,6 +21,8 @@ from helper_functions import json_handler
 from helper_functions import df_handler
 import io
 
+
+
 load_dotenv()
 # Initialize OpenAI API key
 api_key = os.getenv("OPENAI_API_KEY")
@@ -35,6 +37,10 @@ class MachinePartIdentifier(BaseModel):
     category_name: str
     subcategory_name: str
     certainty: float
+
+class ManualPartIdentifier(BaseModel):
+    unique_id: int
+    name: str
 
 # =====================
 # Utility Functions
@@ -233,6 +239,62 @@ def get_part_description(encoded_image,api_key, context_partnames=""):
 
     return embedding_response
 
+def send_to_label_openai_api(encoded_image, api_endpoint, api_key, pairs, label):
+    """
+    Sends an image and label to the OpenAI API and retrieves the best matching industrial component.
+
+    Args:
+        encoded_image (str): Base64 encoded image with the marked region.
+        api_endpoint (str): API endpoint URL.
+        api_key (str): API key for authentication.
+        pairs (list): List of dictionaries containing 'id' and 'name' pairs.
+        label (str): Label name provided as the primary indicator for matching.
+
+    Returns:
+        ManualPartIdentifier: Object containing the matched 'unique_id', 'name'.
+    """
+    client = OpenAI(api_key=api_key)
+
+    # Define the messages for the API request
+    messages = [
+        {
+            "role": "system",
+            "content": f"""
+            Du bist ein Experte für die Identifikation industrieller Komponenten. Deine Aufgabe ist es, den bereitgestellten Label-Namen mit der höchsten Priorität zu verwenden, um das am besten passende Element aus der bereitgestellten Liste zu bestimmen. Wenn die Übereinstimmung mit dem Label nicht eindeutig ist, kannst du das bereitgestellte Bild zur Unterstützung verwenden.
+
+            Liste der Elemente:
+            {pairs}
+            Label-Name: {label}
+
+            Schritte:
+            1. Vergleiche den bereitgestellten Label-Namen mit den Namen in der Liste.
+            2. Gib den eintrag zurück der am besten passt.
+            3. Wenn die Übereinstimmung nicht eindeutig ist, kannst du den rot markierten Bereich im Bild analysieren.
+            4. Identifiziere die Komponente oder das Bauteil, das im markierten Bereich zu sehen ist, und bestimme das Element (ID, Name), das am besten passt.
+            5. Gib das passende Element sowie dein Vertrauen in die Übereinstimmung als Punktzahl zurück.
+
+            Ausgabeformat:
+            - Passendes Element: ID und Name des besten Treffers.
+            
+            Kontext:
+            Nutze den bereitgestellten Label-Namen und, falls erforderlich, den rot markierten Bereich im Bild sowie den Kontext der Maschine oder des Produkts, um eine möglichst präzise Identifikation vorzunehmen.
+            """
+        },
+        {
+            "role": "user",
+            "content": f"data:image/png;base64,{encoded_image}"
+        }
+    ]
+
+    # Send the request to the OpenAI API
+    response = client.beta.chat.completions.parse(
+        model="gpt-4o-mini",
+        messages=messages,
+        response_format=ManualPartIdentifier,
+    )
+
+    return response
+
 def send_to_openai_api(encoded_image, api_endpoint, api_key, pairs):
     client = OpenAI(api_key=api_key)
 
@@ -351,7 +413,7 @@ def main():
         roi, roi_coords = select_roi(image)
         if roi is not None:
             st.write("Selected Region (Original Size):")
-            st.image(roi, use_container_width=False)
+            st.image(roi)
 
             # Step 3: Choose Identification Mode
             st.write("### Identify Part")
@@ -360,13 +422,11 @@ def main():
             certainty = None
 
             col1, col2 = st.columns(2)
-
+            print(f"ROI Size: {roi.shape}")
+            encoded_roi = encode_image_to_base64(roi)
             # Auto Identify
             with col1:
                 if st.button("Auto Identify Part"):
-                    print(f"ROI Size: {roi.shape}")
-                    encoded_roi = encode_image_to_base64(roi)
-
                     use_embedding = True
                     if use_embedding:
                         category_context = ""
@@ -410,8 +470,18 @@ def main():
                     if manual_part_name:
                         part_subcategory_name = manual_part_name
                         part_category_name = "Manual Entry"
+                        df = pd.read_csv('context/unique_id_embeddings.csv')
+                        #pairs = df['unique_id','name'].tolist()
+                        pairs = df[['unique_id', 'name']].values.tolist()
+                        response = send_to_label_openai_api(encoded_roi, api_endpoint, api_key, pairs,part_subcategory_name)
                         certainty = 1.0  # Assume 100% certainty for manual entry
-                        identification_mode = "manual"
+                        identification_mode = "embedding"
+                        if response and response.choices:
+                            parsed_data = response.choices[0].message.parsed
+                            print(f"Manual Part Identifier: {parsed_data}")
+                            part_category_name = parsed_data.unique_id                   
+                            part_subcategory_name = parsed_data.name
+
                     else:
                         st.error("Please enter a part name.")
 
@@ -446,12 +516,12 @@ def main():
 
             # Annotated Preview Image
             if st.session_state.display_preview:
-                st.image(preview_image, caption="Preview of Annotated Image", use_container_width=True)
+                st.image(preview_image, caption="Preview of Annotated Image")
 
 
         # Step 5: Display Final Image
         st.write("### Current Image")
-        st.image(st.session_state.final_output, caption="Final Output Image", use_container_width=True)
+        st.image(st.session_state.final_output, caption="Final Output Image")
 
         # Step 6: Display Annotations List
         if st.session_state.annotations:

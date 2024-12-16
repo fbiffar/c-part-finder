@@ -121,10 +121,8 @@ def annotate_part(image, roi_coords, part_name):
     annotated = image.copy()
     img_height, img_width = annotated.shape[:2]  # Get the image dimensions
     left, top, right, bottom = roi_coords
-
-    green = (0, 255, 0)
-    white = (255, 255, 255)
-    black = (0, 0, 0)
+    green = (0, 255, 0)  # Green color for the rectangle
+    black = (0, 0, 0)    # Black color for the text
 
     # Draw the green rectangle
     cv2.rectangle(annotated, (left, top), (right, bottom), green, 2)  # Green rectangle
@@ -148,14 +146,16 @@ def annotate_part(image, roi_coords, part_name):
     if text_y - text_height - 5 < 0:
         text_y = top + text_height + 10  # Move text below the rectangle if it overflows
 
-    # # Draw the white background for the text
+    # Draw the green background for the text
     cv2.rectangle(annotated, (text_x, text_y - text_height - 5),
-                  (text_x + text_width, text_y + 5), white, -1)  # White background
+                  (text_x + text_width, text_y + 5), green, -1)  # Green background
 
     # Add the black text
     cv2.putText(annotated, part_name, (text_x, text_y), font, font_scale, black, thickness)
 
     return annotated
+
+    
 
 def search_bossard(component_name):
     query = f"{component_name} site: www.bossard.com"

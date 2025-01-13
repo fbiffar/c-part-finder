@@ -23,6 +23,7 @@ import io
 
 
 
+
 load_dotenv()
 # Initialize OpenAI API key
 api_key = os.getenv("OPENAI_API_KEY")
@@ -121,6 +122,17 @@ def select_roi(image):
 
     return None, None
 
+
+
+
+def select_roi_with_opencv(image):
+    image_copy = image.copy()
+    roi = cv2.selectROI("Select ROI", image_copy, fromCenter=False, showCrosshair=True)
+    x, y, w, h = roi
+    cv2.destroyAllWindows()
+    if w and h:  # If valid ROI is selected
+        return image_copy[y:y+h, x:x+w], (x, y, x+w, y+h)
+    return None, None
 
 def annotate_part(image, roi_coords, part_name):
     """Annotate the image with a green rectangle and part name."""
@@ -268,7 +280,7 @@ def send_to_label_openai_api(encoded_image, api_endpoint, api_key, pairs, label)
 
             Schritte:
             1. Vergleiche den bereitgestellten Label-Namen mit den Namen in der Liste.
-            2. Gib den eintrag zurück der am besten passt.
+            2. Gib den Eintrag zurück der am besten passt.
             3. Wenn die Übereinstimmung nicht eindeutig ist, kannst du den rot markierten Bereich im Bild analysieren.
             4. Identifiziere die Komponente oder das Bauteil, das im markierten Bereich zu sehen ist, und bestimme das Element (ID, Name), das am besten passt.
             5. Gib das passende Element sowie dein Vertrauen in die Übereinstimmung als Punktzahl zurück.
@@ -403,11 +415,16 @@ def main():
     pairs = json_handler.extract_category_subcategory_pairs(json_path)
     # Step 1: Upload image
     image, img = load_image()
+   
 
     if image is not None:
         # Initialize final output
         if st.session_state.final_output is None:
             st.session_state.final_output = image.copy()
+            st.write("### Current Image")
+            st.image(st.session_state.final_output, caption="Original Image")
+            
+    
 
         # Step 2: Select ROI
         roi, roi_coords = select_roi(image)

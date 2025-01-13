@@ -70,7 +70,13 @@ def mark_roi_with_border(image, roi_coords):
 def select_roi(image):
     """Allow users to select a region of interest (ROI) on the image."""
     st.write("Draw a rectangle around the part you want to identify")
+    # Store the image in session state if not already stored
+    if "uploaded_image" not in st.session_state:
+        st.session_state.uploaded_image = image
     
+    # Use the image from session state
+    image = st.session_state.uploaded_image
+
     # Get image dimensions
     img_height, img_width = image.shape[:2]
     
@@ -415,7 +421,6 @@ def main():
     pairs = json_handler.extract_category_subcategory_pairs(json_path)
     # Step 1: Upload image
     image, img = load_image()
-   
 
     if image is not None:
         # Initialize final output

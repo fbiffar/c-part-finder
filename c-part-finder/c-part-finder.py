@@ -122,7 +122,7 @@ def select_roi(image):
         
         # Extract ROI and mark it with a border
         roi = image[top:bottom, left:right]
-        image_with_roi = mark_roi_with_border(image, (left, top, right, bottom))
+        #image_with_roi = mark_roi_with_border(image, (left, top, right, bottom))
         
         return roi, (left, top, right, bottom)
 
@@ -411,6 +411,7 @@ def main():
 
     # Initialize session state
     if "annotations" not in st.session_state:
+        st.session_state.image = None
         st.session_state.annotations = []
         st.session_state.final_output = None
         st.session_state.pending_annotation = None  # Hold pending annotation
@@ -421,9 +422,13 @@ def main():
     pairs = json_handler.extract_category_subcategory_pairs(json_path)
     # Step 1: Upload image
     image, img = load_image()
+    if st.session_state.image is None and image is not None:
+        st.session_state.image = image.copy()
+        
 
-    if image is not None:
+    if st.session_state.image is not None:
         # Initialize final output
+        st.session_state.image = image.copy()
         if st.session_state.final_output is None:
             st.session_state.final_output = image.copy()
             st.write("### Current Image")

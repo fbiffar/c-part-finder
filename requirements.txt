@@ -46,7 +46,7 @@ narwhals==1.14.1
 nest-asyncio==1.6.0
 numpy==2.1.3
 openai==1.54.5
-opencv-python==4.10.0.84
+opencv-python-headless==4.10.0.84
 packaging==24.2
 pandas==2.2.3
 parso==0.8.4

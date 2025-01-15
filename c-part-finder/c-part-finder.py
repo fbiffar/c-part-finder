@@ -71,7 +71,10 @@ def select_roi(image):
     """Allow users to select a region of interest (ROI) on the image."""
     st.write("Draw a rectangle around the part you want to identify")
     # Store the image in session state if not already stored
+    st.write("DEBUG: At start of select_roi")
+
     if "uploaded_image" not in st.session_state:
+        st.write(f"DEBUG: session_state.uploaded_image type: {type(st.session_state.uploaded_image)}")
         st.session_state.uploaded_image = image
     
     # Use the image from session state

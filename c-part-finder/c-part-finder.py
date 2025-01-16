@@ -71,10 +71,7 @@ def select_roi(image):
     """Allow users to select a region of interest (ROI) on the image."""
     st.write("Draw a rectangle around the part you want to identify")
     # Store the image in session state if not already stored
-    st.write("DEBUG: At start of select_roi")
-
     if "uploaded_image" not in st.session_state:
-        st.write(f"DEBUG: session_state.uploaded_image type: {type(st.session_state.uploaded_image)}")
         st.session_state.uploaded_image = image
     
     # Use the image from session state
@@ -125,7 +122,7 @@ def select_roi(image):
         
         # Extract ROI and mark it with a border
         roi = image[top:bottom, left:right]
-        #image_with_roi = mark_roi_with_border(image, (left, top, right, bottom))
+        image_with_roi = mark_roi_with_border(image, (left, top, right, bottom))
         
         return roi, (left, top, right, bottom)
 
@@ -414,7 +411,6 @@ def main():
 
     # Initialize session state
     if "annotations" not in st.session_state:
-        st.session_state.image = None
         st.session_state.annotations = []
         st.session_state.final_output = None
         st.session_state.pending_annotation = None  # Hold pending annotation
@@ -425,13 +421,9 @@ def main():
     pairs = json_handler.extract_category_subcategory_pairs(json_path)
     # Step 1: Upload image
     image, img = load_image()
-    if st.session_state.image is None and image is not None:
-        st.session_state.image = image.copy()
-        
 
-    if st.session_state.image is not None:
+    if image is not None:
         # Initialize final output
-        st.session_state.image = image.copy()
         if st.session_state.final_output is None:
             st.session_state.final_output = image.copy()
             st.write("### Current Image")

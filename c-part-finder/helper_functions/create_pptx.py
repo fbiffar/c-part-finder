@@ -22,6 +22,7 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
     - output_path: Path where the generated PowerPoint file will be saved.
     """
     json_path = "c-part-finder/structured_categories/restructured_categories.json"
+    template_path = "./context/Template.pptx"
 
     # Convert the PIL Image to a file-like object (BytesIO)
     img_bytes = io.BytesIO()
@@ -31,8 +32,8 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
     img_width, img_height = img.size
 
     # Create PowerPoint presentation
-    prs = Presentation()
-    slide = prs.slides.add_slide(prs.slide_layouts[5])  # Blank slide layout
+    prs = Presentation(template_path)
+    slide = prs.slides.add_slide(prs.slide_layouts[7])  # Blank slide layout
 
     # Get slide dimensions
     slide_width = prs.slide_width
@@ -49,8 +50,8 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
     image_shape = slide.shapes.add_picture(
         img_bytes, image_left, image_top, width=image_width_on_slide, height=image_height_on_slide
     )
-    image_shape.line.color.rgb = RGBColor(0, 0, 0)  # Black border
-    image_shape.line.width = Pt(3)  # Thickness of the border
+    #image_shape.line.color.rgb = RGBColor(0, 0, 0)  # Black border
+    #image_shape.line.width = Pt(3)  # Thickness of the border
 
     # Calculate scaling factors for annotation placement
     scale_x = image_width_on_slide / img_width
@@ -105,9 +106,12 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
             text_frame = label.text_frame
             text_frame.word_wrap = True
             p = text_frame.add_paragraph()
-            p.text = f"{subcategory_name}"
-            p.font.size = Pt(12)
-            p.font.bold = True
+            r1 = p.add_run()
+            r1.text =f"{subcategory_name}" 
+            #p.text = f"{subcategory_name}"
+            r1.font.size = Pt(12)
+            r1.font.bold = True
+            r1.hyperlink.address = f"{url}"
             text_frame.paragraphs[0].alignment = 1  # Center alignment
 
             # Adjust arrow direction dynamically
@@ -161,8 +165,8 @@ def create_pptx_with_annotations(img, annotations, output_path="annotated_presen
                     width=part_image_width,
                     height=part_image_height
                 )
-                img_shape.line.color.rgb = RGBColor(0, 0, 0)  # Black border
-                img_shape.line.width = Pt(3)  # Thickness of the border
+                #img_shape.line.color.rgb = RGBColor(0, 0, 0)  # Black border
+                #img_shape.line.width = Pt(3)  # Thickness of the border
             # Increment top position for the next label
             current_top += label_spacing
 
